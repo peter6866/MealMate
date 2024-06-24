@@ -1,0 +1,3 @@
+{
+  "typescript.tsdk": "./web-client/node_modules/typescript/lib"
+}
