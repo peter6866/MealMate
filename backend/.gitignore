@@ -1,0 +1,97 @@
+# Binaries for programs and plugins
+*.exe
+*.dll
+*.so
+*.dylib
+*.exe~
+
+# Output of the Go coverage tool, specifically when used with LiteIDE
+*.out
+
+# Log files
+*.log
+
+# Configuration files for IDEs and editors
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# Environment variable files
+.env
+.env.*
+
+# Go build artifacts
+bin/
+dist/
+out/
+*.o
+*.a
+*.cgo1.go
+*.cgo2.c
+*_cgo_gotypes.go
+*_cgo_export.*
+*_cgo_main.*
+*.cgo_generated.*
+
+# Dependency directories
+vendor/
+node_modules/
+
+# Go modules files
+go.sum
+
+# Directories and files created by build tools
+.coverage/
+.coverage.out
+*.test
+*.test.exe
+*.test.out
+*.prof
+coverage.out
+*.coverprofile
+
+# macOS files
+.DS_Store
+
+# Windows files
+Thumbs.db
+
+# Linux files
+*.swp
+*.swo
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.backup
+*.bak2
+*~
+*.*~
+
+# Backup files from text editors
+*.bak
+*.swp
+*.swo
+
+# JetBrains IDEs
+*.iml
+
+# AWS SAM CLI
+.aws-sam/
+
+# Docker
+.dockerignore
+Dockerfile
+docker-compose.yml
+
+# GitHub workflow files
+.github/
+
+# GitLab CI files
+.gitlab-ci.yml
+
+# Go cache and package directories
+/pkg/
+_build/
