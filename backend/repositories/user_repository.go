@@ -19,8 +19,8 @@ func NewUserRepository(client *mongo.Client) *UserRepository {
 }
 
 // create a new user
-func (r *UserRepository) Create(user *models.User) error {
-	_, err := r.collection.InsertOne(context.Background(), user)
+func (r *UserRepository) Create(ctx context.Context, user *models.User) error {
+	_, err := r.collection.InsertOne(ctx, user)
 	return err
 }
 
@@ -35,9 +35,9 @@ func (r *UserRepository) FindByID(id primitive.ObjectID) (*models.User, error) {
 }
 
 // find by googleID
-func (r *UserRepository) FindByGoogleID(googleId string) (*models.User, error) {
+func (r *UserRepository) FindByGoogleID(ctx context.Context, googleId string) (*models.User, error) {
 	var user models.User
-	err := r.collection.FindOne(context.Background(), bson.M{"googleId": googleId}).Decode(&user)
+	err := r.collection.FindOne(ctx, bson.M{"googleId": googleId}).Decode(&user)
 	if err != nil {
 		return nil, err
 	}

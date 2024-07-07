@@ -1,6 +1,8 @@
 package services
 
 import (
+	"context"
+
 	"github.com/peter6866/foodie/models"
 	"github.com/peter6866/foodie/repositories"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -16,10 +18,10 @@ func NewUserService(repo *repositories.UserRepository) *UserService {
 }
 
 // Find or create user
-func (s *UserService) FindOrCreateUser(name, email, googleId, role, picture string) (*models.User, error) {
-	user, err := s.repo.FindByGoogleID(googleId)
+func (s *UserService) FindOrCreateUser(ctx context.Context, name, email, googleId, role, picture string) (*models.User, error) {
+	user, err := s.repo.FindByGoogleID(ctx, googleId)
 	if err == mongo.ErrNoDocuments {
-		return s.CreateUser(name, email, googleId, role, picture)
+		return s.CreateUser(ctx, name, email, googleId, role, picture)
 	} else if err != nil {
 		return nil, err
 	}
@@ -28,9 +30,9 @@ func (s *UserService) FindOrCreateUser(name, email, googleId, role, picture stri
 }
 
 // Create a new user
-func (s *UserService) CreateUser(name, email, googleID, role, picture string) (*models.User, error) {
+func (s *UserService) CreateUser(ctx context.Context, name, email, googleID, role, picture string) (*models.User, error) {
 	user := models.NewUser(name, email, googleID, role, picture)
-	err := s.repo.Create(user)
+	err := s.repo.Create(ctx, user)
 	if err != nil {
 		return nil, err
 	}

@@ -3,7 +3,6 @@ package controllers
 import (
 	"encoding/json"
 	"io"
-	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -72,16 +71,16 @@ func (c *AuthController) LoginOrRegister(context *gin.Context) {
 		return
 	}
 
-	log.Println(userInfo["picture"].(string))
+	ctx := context.Request.Context()
 
 	// Find or create user
-	user, err := c.userService.FindOrCreateUser(userInfo["name"].(string), userInfo["email"].(string), userInfo["id"].(string), "user", userInfo["picture"].(string))
+	user, err := c.userService.FindOrCreateUser(ctx, userInfo["name"].(string), userInfo["email"].(string), userInfo["id"].(string), "user", userInfo["picture"].(string))
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to find or create user"})
 		return
 	}
 
-	jwtToken, err := utils.GenerateToken(user.ID, userInfo["email"].(string), "user")
+	jwtToken, err := utils.GenerateToken(user.ID, userInfo["email"].(string), user.Role)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to generate token"})
 		return
