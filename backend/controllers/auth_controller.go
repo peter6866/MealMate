@@ -3,38 +3,50 @@ package controllers
 import (
 	"encoding/json"
 	"io"
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/peter6866/foodie/config"
 	"github.com/peter6866/foodie/services"
+	"github.com/peter6866/foodie/utils"
 )
 
 type AuthController struct {
 	userService *services.UserService
 }
 
-func GoogleLogin(context *gin.Context) {
-	var stateString string = config.AppConfig.GOOGLE_RANDOM_STATE
-	// Get the URL to redirect the user to
-	url := config.AppConfig.GoogleLoginConfig.AuthCodeURL(stateString)
-	// Redirect the user to the Google login page
-	context.Redirect(http.StatusTemporaryRedirect, url)
+func NewAuthController(userService *services.UserService) *AuthController {
+	return &AuthController{userService: userService}
 }
 
-func GoogleCallBack(context *gin.Context) {
+func GoogleLogin(context *gin.Context) {
 	var stateString string = config.AppConfig.GOOGLE_RANDOM_STATE
-	state := context.Query("state")
-	if state != stateString {
+	url := config.AppConfig.GoogleLoginConfig.AuthCodeURL(stateString)
+
+	// return the url
+	context.JSON(http.StatusOK, gin.H{"url": url})
+}
+
+func (c *AuthController) LoginOrRegister(context *gin.Context) {
+	var requestBody struct {
+		Code  string `json:"code"`
+		State string `json:"state"`
+	}
+
+	if err := context.BindJSON(&requestBody); err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request body"})
+		return
+	}
+
+	var stateString string = config.AppConfig.GOOGLE_RANDOM_STATE
+	if requestBody.State != stateString {
 		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid state parameter"})
 		return
 	}
 
-	code := context.Query("code")
-
 	googlecon := config.AppConfig.GoogleLoginConfig
-
-	token, err := googlecon.Exchange(context, code)
+	token, err := googlecon.Exchange(context, requestBody.Code)
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": "Failed to exchange token"})
 		return
@@ -53,12 +65,27 @@ func GoogleCallBack(context *gin.Context) {
 		return
 	}
 
-	var user map[string]interface{}
-	err = json.Unmarshal(body, &user)
+	var userInfo map[string]interface{}
+	err = json.Unmarshal(body, &userInfo)
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": "Failed to unmarshal response body"})
 		return
 	}
 
-	context.JSON(http.StatusOK, user)
+	log.Println(userInfo["picture"].(string))
+
+	// Find or create user
+	user, err := c.userService.FindOrCreateUser(userInfo["name"].(string), userInfo["email"].(string), userInfo["id"].(string), "user", userInfo["picture"].(string))
+	if err != nil {
+		context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to find or create user"})
+		return
+	}
+
+	jwtToken, err := utils.GenerateToken(user.ID, userInfo["email"].(string), "user")
+	if err != nil {
+		context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to generate token"})
+		return
+	}
+
+	context.JSON(http.StatusOK, gin.H{"token": jwtToken})
 }

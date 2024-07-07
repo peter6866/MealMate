@@ -10,7 +10,7 @@ type User struct {
 	ID           primitive.ObjectID   `bson:"_id,omitempty" json:"id,omitempty"`
 	Name         string               `bson:"name" json:"name"`
 	Email        string               `bson:"email" json:"email"`
-	GoogleID     string               `bson:"googleId" json:"-"`
+	GoogleId     string               `bson:"googleId" json:"-"`
 	Role         string               `bson:"role" json:"role"`
 	OrderHistory []primitive.ObjectID `bson:"orderHistory" json:"orderHistory"`
 	CreatedAt    time.Time            `bson:"createdAt" json:"createdAt"`
@@ -25,17 +25,18 @@ const (
 )
 
 // NewUser creates a new user instance
-func NewUser(name, email, googleID, role, picture string) *User {
+func NewUser(name, email, googleId, role, picture string) *User {
 	now := time.Now()
 	return &User{
 		Name:         name,
 		Email:        email,
-		GoogleID:     googleID,
+		GoogleId:     googleId,
 		Role:         role,
 		OrderHistory: []primitive.ObjectID{},
 		CreatedAt:    now,
 		UpdatedAt:    now,
 		LastLoginAt:  now,
+		Picture:      picture,
 	}
 }
 

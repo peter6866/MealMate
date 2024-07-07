@@ -34,6 +34,16 @@ func (r *UserRepository) FindByID(id primitive.ObjectID) (*models.User, error) {
 	return &user, nil
 }
 
+// find by googleID
+func (r *UserRepository) FindByGoogleID(googleId string) (*models.User, error) {
+	var user models.User
+	err := r.collection.FindOne(context.Background(), bson.M{"googleId": googleId}).Decode(&user)
+	if err != nil {
+		return nil, err
+	}
+	return &user, nil
+}
+
 // Update a user
 func (r *UserRepository) Update(user *models.User) error {
 	_, err := r.collection.UpdateOne(

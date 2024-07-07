@@ -4,6 +4,7 @@ import (
 	"github.com/peter6866/foodie/models"
 	"github.com/peter6866/foodie/repositories"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 type UserService struct {
@@ -12,6 +13,18 @@ type UserService struct {
 
 func NewUserService(repo *repositories.UserRepository) *UserService {
 	return &UserService{repo: repo}
+}
+
+// Find or create user
+func (s *UserService) FindOrCreateUser(name, email, googleId, role, picture string) (*models.User, error) {
+	user, err := s.repo.FindByGoogleID(googleId)
+	if err == mongo.ErrNoDocuments {
+		return s.CreateUser(name, email, googleId, role, picture)
+	} else if err != nil {
+		return nil, err
+	}
+
+	return user, nil
 }
 
 // Create a new user
