@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { cookies } from 'next/headers';
 import axios from 'axios';
 
 export async function GET(request: NextRequest) {
@@ -12,7 +13,7 @@ export async function GET(request: NextRequest) {
 
   try {
     const response = await axios.post(
-      'http://localhost:8080/api/auth/loginOrRegister',
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth/loginOrRegister`,
       {
         code,
         state,
@@ -20,7 +21,12 @@ export async function GET(request: NextRequest) {
     );
 
     const { token } = response.data;
-    console.log(token);
+
+    cookies().set('token', token, {
+      httpOnly: true,
+      secure: false,
+      sameSite: 'lax',
+    });
 
     const redirectUrl = new URL('/', request.url);
 
