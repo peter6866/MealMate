@@ -21,7 +21,11 @@ func NewMenuItemRepository(client *mongo.Client) *MenuItemRepository {
 
 // create a new menu item
 func (r *MenuItemRepository) Create(ctx context.Context, menuItem *models.MenuItem) error {
-	_, err := r.collection.InsertOne(ctx, menuItem)
+	result, err := r.collection.InsertOne(ctx, menuItem)
+	if err == nil {
+		menuItem.ID = result.InsertedID.(primitive.ObjectID)
+	}
+
 	return err
 }
 

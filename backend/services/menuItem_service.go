@@ -13,11 +13,15 @@ import (
 )
 
 type MenuItemService struct {
-	repo *repositories.MenuItemRepository
+	menuItemRepo *repositories.MenuItemRepository
+	categoryRepo *repositories.CategoryRepository
 }
 
-func NewMenuItemService(repo *repositories.MenuItemRepository) *MenuItemService {
-	return &MenuItemService{repo: repo}
+func NewMenuItemService(menuItemRepo *repositories.MenuItemRepository, categoryRepo *repositories.CategoryRepository) *MenuItemService {
+	return &MenuItemService{
+		menuItemRepo: menuItemRepo,
+		categoryRepo: categoryRepo,
+	}
 }
 
 // Create a new menu item
@@ -37,20 +41,56 @@ func (s *MenuItemService) CreateMenuItem(ctx context.Context, item *models.MenuI
 	item.CreatedAt = now
 	item.UpdatedAt = now
 
-	return s.repo.Create(ctx, item)
+	return s.menuItemRepo.Create(ctx, item)
 }
 
-func (s *MenuItemService) GetMenuItem(ctx context.Context, id string) (*models.MenuItem, error) {
+// Custom struct to return menu item with category name
+type MenuItemWithCategory struct {
+	*models.MenuItem
+	CategoryName string `json:"categoryName"`
+}
+
+func (s *MenuItemService) GetMenuItem(ctx context.Context, id string) (*MenuItemWithCategory, error) {
 	objectID, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		return nil, errors.New("invalid ID")
 	}
 
-	return s.repo.GetByID(ctx, objectID)
+	menuItem, err := s.menuItemRepo.GetByID(ctx, objectID)
+	if err != nil {
+		return nil, err
+	}
+
+	category, err := s.categoryRepo.GetByID(ctx, menuItem.CategoryID)
+	if err != nil {
+		return nil, err
+	}
+
+	return &MenuItemWithCategory{
+		MenuItem:     menuItem,
+		CategoryName: category.Name,
+	}, nil
 }
 
-func (s *MenuItemService) GetAllMenuItems(ctx context.Context) ([]*models.MenuItem, error) {
-	return s.repo.GetAll(ctx)
+func (s *MenuItemService) GetAllMenuItems(ctx context.Context) ([]*MenuItemWithCategory, error) {
+	menuItems, err := s.menuItemRepo.GetAll(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	menuItemsWithCategory := make([]*MenuItemWithCategory, len(menuItems))
+	for i, item := range menuItems {
+		category, err := s.categoryRepo.GetByID(ctx, item.CategoryID)
+		if err != nil {
+			return nil, err
+		}
+		menuItemsWithCategory[i] = &MenuItemWithCategory{
+			MenuItem:     item,
+			CategoryName: category.Name,
+		}
+	}
+
+	return menuItemsWithCategory, nil
 }
 
 func (s *MenuItemService) UpdateMenuItem(ctx context.Context, menuItem *models.MenuItem) error {
@@ -60,7 +100,7 @@ func (s *MenuItemService) UpdateMenuItem(ctx context.Context, menuItem *models.M
 
 	menuItem.UpdatedAt = time.Now()
 
-	return s.repo.Update(ctx, menuItem)
+	return s.menuItemRepo.Update(ctx, menuItem)
 }
 
 func (s *MenuItemService) DeleteMenuItem(ctx context.Context, id string) error {
@@ -68,21 +108,37 @@ func (s *MenuItemService) DeleteMenuItem(ctx context.Context, id string) error {
 	if err != nil {
 		return errors.New("invalid ID")
 	}
-	return s.repo.Delete(ctx, objectID)
+
+	menuItem, err := s.menuItemRepo.GetByID(ctx, objectID)
+	if err != nil {
+		return err
+	}
+
+	if menuItem == nil {
+		return errors.New("menu item not found")
+	}
+
+	err = utils.DeleteFileFromS3(menuItem.ImageURL)
+	if err != nil {
+		return err
+	}
+
+	return s.menuItemRepo.Delete(ctx, objectID)
 }
 
+// TODO: Implement the following methods
 func (s *MenuItemService) GetMenuItemsByCategory(ctx context.Context, categoryID string) ([]*models.MenuItem, error) {
 	objectID, err := primitive.ObjectIDFromHex(categoryID)
 	if err != nil {
 		return nil, errors.New("invalid category ID")
 	}
-	return s.repo.GetByCategory(ctx, objectID)
+	return s.menuItemRepo.GetByCategory(ctx, objectID)
 }
 
 func (s *MenuItemService) GetMenuItemsBySpiceLevel(ctx context.Context, spiceLevel models.SpiceLevel) ([]*models.MenuItem, error) {
-	return s.repo.GetBySpiceLevel(ctx, spiceLevel)
+	return s.menuItemRepo.GetBySpiceLevel(ctx, spiceLevel)
 }
 
 func (s *MenuItemService) GetMenuItemsByAlcoholContent(ctx context.Context, alcoholContent models.AlcoholContent) ([]*models.MenuItem, error) {
-	return s.repo.GetByAlcoholContent(ctx, alcoholContent)
+	return s.menuItemRepo.GetByAlcoholContent(ctx, alcoholContent)
 }

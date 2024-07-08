@@ -22,11 +22,16 @@ func SetupRouter(client *mongo.Client) *gin.Engine {
 	router.GET("/google_login", controllers.GoogleLogin)
 	router.POST("/api/auth/loginOrRegister", authController.LoginOrRegister)
 
+	categoryRepo := repositories.NewCategoryRepository(client)
+	categoryService := services.NewCategoryService(categoryRepo)
+	categoryController := controllers.NewCategoryController(categoryService)
+
 	menuItemRepo := repositories.NewMenuItemRepository(client)
-	menuItemService := services.NewMenuItemService(menuItemRepo)
+	menuItemService := services.NewMenuItemService(menuItemRepo, categoryRepo)
 	menuItemController := controllers.NewMenuItemController(menuItemService)
 
 	router.GET("/api/menuItems", menuItemController.GetAllMenuItems)
+	router.GET("/api/categories", categoryController.GetAllCategories)
 
 	// Authenticated routes
 	authenticatedRoutes := router.Group("/api")
@@ -39,6 +44,11 @@ func SetupRouter(client *mongo.Client) *gin.Engine {
 			menuItemRoutes.POST("", middlewares.AdminMiddleware(), menuItemController.CreateMenuItem)
 			// menuItemRoutes.PUT("/:id", middlewares.AdminMiddleware(), menuItemController.UpdateMenuItem)
 			menuItemRoutes.DELETE("/:id", middlewares.AdminMiddleware(), menuItemController.DeleteMenuItem)
+		}
+
+		categoryRoutes := authenticatedRoutes.Group("/categories")
+		{
+			categoryRoutes.POST("", middlewares.AdminMiddleware(), categoryController.CreateCategory)
 		}
 	}
 
