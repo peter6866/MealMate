@@ -8,7 +8,7 @@ export async function GET(request: NextRequest) {
   const state = searchParams.get('state');
 
   if (!code || !state) {
-    return NextResponse.redirect('/');
+    return NextResponse.redirect(new URL('/', request.url));
   }
 
   try {
@@ -33,6 +33,6 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(redirectUrl);
   } catch (error) {
     console.error(error);
-    return NextResponse.redirect('/');
+    return NextResponse.redirect(new URL('/', request.url));
   }
 }

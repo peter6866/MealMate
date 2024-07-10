@@ -88,3 +88,14 @@ func (c *AuthController) LoginOrRegister(context *gin.Context) {
 
 	context.JSON(http.StatusOK, gin.H{"token": jwtToken})
 }
+
+func (c *AuthController) GetUser(context *gin.Context) {
+	userID, _ := context.Get("userID")
+	user, err := c.userService.GetUser(userID.(string))
+	if err != nil {
+		context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get user"})
+		return
+	}
+
+	context.JSON(http.StatusOK, user)
+}

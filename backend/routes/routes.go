@@ -13,7 +13,15 @@ import (
 func SetupRouter(client *mongo.Client) *gin.Engine {
 	router := gin.Default()
 
-	router.Use(cors.Default())
+	config := cors.Config{
+		AllowOrigins:     []string{"http://localhost:3000"},
+		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE"},
+		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+	}
+
+	router.Use(cors.New(config))
 
 	userRepo := repositories.NewUserRepository(client)
 	userService := services.NewUserService(userRepo)
@@ -37,6 +45,8 @@ func SetupRouter(client *mongo.Client) *gin.Engine {
 	authenticatedRoutes := router.Group("/api")
 	authenticatedRoutes.Use(middlewares.AuthMiddleware)
 	{
+		authenticatedRoutes.GET("/auth/getUser", authController.GetUser)
+
 		menuItemRoutes := authenticatedRoutes.Group("/menuItems")
 		{
 			menuItemRoutes.GET("/:id", menuItemController.GetMenuItem)

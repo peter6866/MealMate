@@ -40,8 +40,12 @@ func (s *UserService) CreateUser(ctx context.Context, name, email, googleID, rol
 }
 
 // Find a user by ID
-func (s *UserService) GetUser(id primitive.ObjectID) (*models.User, error) {
-	return s.repo.FindByID(id)
+func (s *UserService) GetUser(id string) (*models.User, error) {
+	objectID, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return nil, err
+	}
+	return s.repo.FindByID(objectID)
 }
 
 func (s *UserService) UpdateUser(user *models.User) error {

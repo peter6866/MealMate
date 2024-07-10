@@ -1,108 +1,90 @@
-import {
-  Navbar as NextUINavbar,
-  NavbarContent,
-  NavbarMenu,
-  NavbarMenuToggle,
-  NavbarBrand,
-  NavbarItem,
-  NavbarMenuItem,
-} from '@nextui-org/navbar';
-import { Kbd } from '@nextui-org/kbd';
-import { Link } from '@nextui-org/link';
-import { Input } from '@nextui-org/input';
-import { link as linkStyles } from '@nextui-org/theme';
-import NextLink from 'next/link';
-import clsx from 'clsx';
+'use client';
 
-import { siteConfig } from '@/config/site';
-import { ThemeSwitch } from '@/components/theme-switch';
-import { SearchIcon, Logo } from '@/components/icons';
+import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
+import { UserCircleIcon } from '@heroicons/react/24/outline';
+import { CalendarDaysIcon } from '@heroicons/react/24/outline';
+import { ShoppingCartIcon } from '@heroicons/react/24/outline';
+import { ClipboardDocumentListIcon } from '@heroicons/react/24/outline';
 
-export const Navbar = () => {
-  const searchInput = (
-    <Input
-      aria-label="Search"
-      classNames={{
-        inputWrapper: 'bg-default-100',
-        input: 'text-sm',
-      }}
-      endContent={
-        <Kbd className="hidden lg:inline-block" keys={['command']}>
-          K
-        </Kbd>
-      }
-      labelPlacement="outside"
-      placeholder="Search..."
-      startContent={
-        <SearchIcon className="text-base text-default-400 pointer-events-none flex-shrink-0" />
-      }
-      type="search"
-    />
-  );
+import { MagnifyingGlassIcon as SearchSolid } from '@heroicons/react/24/solid';
+import { UserCircleIcon as UserSolid } from '@heroicons/react/24/solid';
+import { CalendarDaysIcon as CalendarSolid } from '@heroicons/react/24/solid';
+import { ShoppingCartIcon as ShoppingCartSolid } from '@heroicons/react/24/solid';
+import { ClipboardDocumentListIcon as ClipboardSolid } from '@heroicons/react/24/solid';
+
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+
+interface NavItemProps {
+  href: string;
+  icon: any;
+  solidIcon: any;
+  label: string;
+}
+
+const NavItem: React.FC<NavItemProps> = ({
+  href,
+  icon: Icon,
+  solidIcon: SolidIcon,
+  label,
+}) => {
+  const pathname = usePathname();
+  const isActive = pathname === href;
 
   return (
-    <NextUINavbar maxWidth="xl" position="sticky">
-      <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
-        <NavbarBrand as="li" className="gap-3 max-w-fit">
-          <NextLink className="flex justify-start items-center gap-1" href="/">
-            <Logo />
-            <p className="font-bold text-inherit">ACME</p>
-          </NextLink>
-        </NavbarBrand>
-        <ul className="hidden lg:flex gap-4 justify-start ml-2">
-          {siteConfig.navItems.map((item) => (
-            <NavbarItem key={item.href}>
-              <NextLink
-                className={clsx(
-                  linkStyles({ color: 'foreground' }),
-                  'data-[active=true]:text-primary data-[active=true]:font-medium'
-                )}
-                color="foreground"
-                href={item.href}
-              >
-                {item.label}
-              </NextLink>
-            </NavbarItem>
-          ))}
-        </ul>
-      </NavbarContent>
-
-      <NavbarContent
-        className="hidden sm:flex basis-1/5 sm:basis-full"
-        justify="end"
+    <Link
+      href={href}
+      className="inline-flex flex-col items-center justify-center px-5"
+    >
+      {isActive ? (
+        <SolidIcon className="h-6 w-6 text-blue-500" />
+      ) : (
+        <Icon className="h-6 w-6 text-gray-500" />
+      )}
+      <span
+        className={`text-sm ${isActive ? 'text-blue-500' : 'text-gray-500 dark:text-gray-400'}`}
       >
-        <NavbarItem className="hidden sm:flex gap-2">
-          <ThemeSwitch />
-        </NavbarItem>
-      </NavbarContent>
+        {label}
+      </span>
+    </Link>
+  );
+};
 
-      <NavbarContent className="sm:hidden basis-1 pl-4" justify="end">
-        <ThemeSwitch />
-        <NavbarMenuToggle />
-      </NavbarContent>
-
-      <NavbarMenu>
-        {searchInput}
-        <div className="mx-4 mt-2 flex flex-col gap-2">
-          {siteConfig.navMenuItems.map((item, index) => (
-            <NavbarMenuItem key={`${item}-${index}`}>
-              <Link
-                color={
-                  index === 2
-                    ? 'primary'
-                    : index === siteConfig.navMenuItems.length - 1
-                      ? 'danger'
-                      : 'foreground'
-                }
-                href="#"
-                size="lg"
-              >
-                {item.label}
-              </Link>
-            </NavbarMenuItem>
-          ))}
-        </div>
-      </NavbarMenu>
-    </NextUINavbar>
+export const Navbar = () => {
+  return (
+    <div className="fixed bottom-0 left-0 z-50 w-full h-16 border-t border-gray-200 bg-white dark:bg-gray-800">
+      <div className="grid h-full max-w-lg grid-cols-5 mx-auto font-medium">
+        <NavItem
+          href="/"
+          icon={MagnifyingGlassIcon}
+          solidIcon={SearchSolid}
+          label="Discover"
+        />
+        <NavItem
+          href="/orders"
+          icon={ClipboardDocumentListIcon}
+          solidIcon={ClipboardSolid}
+          label="Orders"
+        />
+        <NavItem
+          href="/meals"
+          icon={CalendarDaysIcon}
+          solidIcon={CalendarSolid}
+          label="Meals"
+        />
+        <NavItem
+          href="/cart"
+          icon={ShoppingCartIcon}
+          solidIcon={ShoppingCartSolid}
+          label="Cart"
+        />
+        <NavItem
+          href="/profile"
+          icon={UserCircleIcon}
+          solidIcon={UserSolid}
+          label="Profile"
+        />
+      </div>
+    </div>
   );
 };

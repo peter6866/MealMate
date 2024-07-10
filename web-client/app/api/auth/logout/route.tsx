@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import axios from 'axios';
 
+// TODO: Invalidate the token on the backend
+
 // clears the token cookie
 export async function GET(request: NextRequest) {
   const cookieStore = cookies();
@@ -11,5 +13,5 @@ export async function GET(request: NextRequest) {
     sameSite: 'lax',
   });
 
-  return NextResponse.json({ success: true });
+  return NextResponse.json({ message: 'Logged out' });
 }

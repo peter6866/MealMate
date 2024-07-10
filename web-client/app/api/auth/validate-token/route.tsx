@@ -25,15 +25,15 @@ export async function GET(request: NextRequest) {
   const token = cookieStore.get('token');
 
   if (!token) {
-    return NextResponse.json({ isValid: false });
+    return NextResponse.json({ isValid: false, token: '' });
   }
 
   if (!token.value) {
-    return NextResponse.json({ isValid: false });
+    return NextResponse.json({ isValid: false, token: '' });
   }
 
   // const isValid = await validateTokenWithBackend(token.value);
   const isValid = true; // Temporarily return true to avoid making requests to the backend
 
-  return NextResponse.json({ isValid });
+  return NextResponse.json({ isValid, token: token.value });
 }

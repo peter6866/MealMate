@@ -9,7 +9,10 @@
 		"lint": "eslint . --ext .ts,.tsx -c .eslintrc.json --fix"
 	},
 	"dependencies": {
+		"@heroicons/react": "^2.1.4",
+		"@nextui-org/avatar": "0.0.0-canary-20240616172522",
 		"@nextui-org/button": "2.0.34",
+		"@nextui-org/card": "^2.0.31",
 		"@nextui-org/code": "2.0.29",
 		"@nextui-org/input": "2.2.2",
 		"@nextui-org/kbd": "2.0.30",
@@ -17,6 +20,8 @@
 		"@nextui-org/listbox": "2.1.21",
 		"@nextui-org/navbar": "2.0.33",
 		"@nextui-org/snippet": "2.0.38",
+		"@nextui-org/spacer": "^2.0.29",
+		"@nextui-org/spinner": "^2.0.30",
 		"@nextui-org/switch": "2.0.31",
 		"@nextui-org/system": "2.2.1",
 		"@nextui-org/theme": "2.2.5",
@@ -29,7 +34,8 @@
 		"next": "14.2.4",
 		"next-themes": "^0.2.1",
 		"react": "18.3.1",
-		"react-dom": "18.3.1"
+		"react-dom": "18.3.1",
+		"react-google-button": "^0.8.0"
 	},
 	"devDependencies": {
 		"@types/node": "20.5.7",

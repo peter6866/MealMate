@@ -2,15 +2,12 @@
 
 import { useState } from 'react';
 import axios from 'axios';
-import { useAuth } from '@/context/AuthContext';
+import GoogleButton from 'react-google-button';
+import { useTheme } from 'next-themes';
 
 export default function GoogleLogin() {
   const [loading, setLoading] = useState(false);
-  const { isLoggedIn, isLoading, logout } = useAuth();
-
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
+  const { theme } = useTheme();
 
   const handleGoogleLogin = async () => {
     setLoading(true);
@@ -25,15 +22,11 @@ export default function GoogleLogin() {
     }
   };
 
-  return isLoggedIn ? (
-    <div>
-      <button onClick={logout} disabled={loading}>
-        Logout
-      </button>
-    </div>
-  ) : (
-    <button onClick={handleGoogleLogin} disabled={loading}>
-      {loading ? 'Loading...' : 'Login with Google'}
-    </button>
+  return (
+    <GoogleButton
+      type={theme === 'dark' ? 'dark' : 'light'}
+      onClick={handleGoogleLogin}
+      disabled={loading}
+    />
   );
 }
