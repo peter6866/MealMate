@@ -1,8 +1,12 @@
 import { Avatar } from '@nextui-org/avatar';
-import { Spacer } from '@nextui-org/spacer';
+import { Button } from '@nextui-org/button';
 import axios from 'axios';
 import { cookies } from 'next/headers';
-import LogoutButton from '@/components/LogoutButton';
+import { ExclamationCircleIcon } from '@heroicons/react/24/outline';
+import { QuestionMarkCircleIcon } from '@heroicons/react/24/outline';
+import { UserIcon } from '@heroicons/react/24/outline';
+
+import SettingsModal from './settingsModal';
 
 interface User {
   id: string;
@@ -25,19 +29,75 @@ export default async function ProfilePage() {
 
   const user = response.data as User;
 
+  // Placeholder data (replace with actual data from your API)
+  const stats = {
+    mealsLogged: 42,
+    totalOrders: 78,
+    dishesEaten: 56,
+  };
+
   return (
-    <div className="flex flex-col items-center p-4">
-      <div className="w-full">
-        <div className="flex flex-col items-center mt-4">
-          <Avatar src={user.picture} className="w-20 h-20" />
-          <h2 className="text-2xl font-bold mt-2">{user.name}</h2>
+    <div className="flex flex-col min-h-[90vh] bg-[#60BEEB]">
+      <div className="text-white p-6 mt-4">
+        <div className="flex items-center">
+          <Avatar
+            src={user.picture}
+            className="w-20 h-20 text-large border-2 border-white"
+          />
+          <div className="ml-4">
+            <h2 className="text-xl font-semibold">{user.name}</h2>
+            <p className="text-sm opacity-85">{user.email}</p>
+          </div>
         </div>
+      </div>
 
-        <Spacer y={2} />
-
-        <div className="space-y-3">
-          <LogoutButton />
+      <div className="flex justify-around bg-white p-4 opacity-85 mx-4 rounded-xl shadow-lg">
+        <div className="text-center">
+          <p className="text-2xl font-bold text-blue-600">
+            {stats.mealsLogged}
+          </p>
+          <p className="text-xs text-gray-500">Meals logged</p>
         </div>
+        <div className="text-center">
+          <p className="text-2xl font-bold text-green-600">
+            {stats.totalOrders}
+          </p>
+          <p className="text-xs text-gray-500">Total orders</p>
+        </div>
+        <div className="text-center">
+          <p className="text-2xl font-bold text-purple-600">
+            {stats.dishesEaten}
+          </p>
+          <p className="text-xs text-gray-500">Dishes eaten</p>
+        </div>
+      </div>
+
+      {/* Settings Options */}
+      <div className="flex flex-col flex-1 mt-8 bg-white rounded-t-2xl px-1 py-4">
+        {[
+          {
+            label: 'Edit Profile',
+            icon: UserIcon,
+          },
+          {
+            label: 'Help & Support',
+            icon: QuestionMarkCircleIcon,
+          },
+          {
+            label: 'About',
+            icon: ExclamationCircleIcon,
+          },
+        ].map((item, index) => (
+          <Button
+            key={index}
+            variant="light"
+            className="justify-start py-2 mb-2 text-md"
+            startContent={<item.icon className="w-6 h-6 mr-2" />}
+          >
+            {item.label}
+          </Button>
+        ))}
+        <SettingsModal />
       </div>
     </div>
   );

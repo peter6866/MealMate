@@ -23,6 +23,7 @@
 
 # Go build artifacts
 tmp/
+tmp/main
 bin/
 dist/
 out/

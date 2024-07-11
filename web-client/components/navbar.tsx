@@ -37,12 +37,12 @@ const NavItem: React.FC<NavItemProps> = ({
       className="inline-flex flex-col items-center justify-center px-5"
     >
       {isActive ? (
-        <SolidIcon className="h-6 w-6 text-blue-500" />
+        <SolidIcon className="h-6 w-6 text-[#60BEEB]" />
       ) : (
         <Icon className="h-6 w-6 text-gray-500" />
       )}
       <span
-        className={`text-sm ${isActive ? 'text-blue-500' : 'text-gray-500 dark:text-gray-400'}`}
+        className={`text-sm ${isActive ? 'text-[#60BEEB]' : 'text-gray-500 dark:text-gray-400'}`}
       >
         {label}
       </span>
