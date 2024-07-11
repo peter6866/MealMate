@@ -22,6 +22,7 @@
 .env.*
 
 # Go build artifacts
+tmp/
 bin/
 dist/
 out/
