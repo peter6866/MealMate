@@ -3,6 +3,7 @@ import { Metadata, Viewport } from 'next';
 
 import { siteConfig } from '@/config/site';
 import { Navbar } from '@/components/navbar';
+import { Providers } from './providers';
 
 export const metadata: Metadata = {
   title: {
@@ -31,10 +32,10 @@ export default function RootLayout({
     <html suppressHydrationWarning lang="en">
       <head />
       <body>
-        <div>
+        <Providers>
           <main className="container mx-auto max-w-7xl pb-16">{children}</main>
           <Navbar />
-        </div>
+        </Providers>
       </body>
     </html>
   );

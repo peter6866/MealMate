@@ -6,6 +6,7 @@ import { Button } from '@nextui-org/button';
 import { useDisclosure } from '@nextui-org/react';
 import { Cog6ToothIcon } from '@heroicons/react/24/outline';
 import LogoutButton from '@/components/LogoutButton';
+import { ThemeSwitcher } from '@/components/theme-switch';
 
 export default function SettingsModal() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -28,10 +29,9 @@ export default function SettingsModal() {
         <ModalContent>
           {(onClose) => (
             <>
-              <ModalHeader className="flex flex-col gap-1">
-                Settings
-              </ModalHeader>
+              <ModalHeader className="flex flex-col">Settings</ModalHeader>
               <ModalBody className="mb-4">
+                <ThemeSwitcher />
                 <LogoutButton />
               </ModalBody>
             </>

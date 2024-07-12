@@ -39,10 +39,10 @@ const NavItem: React.FC<NavItemProps> = ({
       {isActive ? (
         <SolidIcon className="h-6 w-6 text-[#60BEEB]" />
       ) : (
-        <Icon className="h-6 w-6 text-gray-500" />
+        <Icon className="h-6 w-6 text-default-600" />
       )}
       <span
-        className={`text-sm ${isActive ? 'text-[#60BEEB]' : 'text-gray-500 dark:text-gray-400'}`}
+        className={`text-sm ${isActive ? 'text-[#60BEEB]' : 'text-default-600'}`}
       >
         {label}
       </span>
@@ -52,7 +52,7 @@ const NavItem: React.FC<NavItemProps> = ({
 
 export const Navbar = () => {
   return (
-    <div className="fixed bottom-0 left-0 z-50 w-full h-16 border-t border-gray-200 bg-white dark:bg-gray-800">
+    <div className="fixed bottom-0 left-0 z-50 w-full h-16 border-t border-gray-200 bg-white dark:bg-default-100 dark:border-0">
       <div className="grid h-full max-w-lg grid-cols-5 mx-auto font-medium">
         <NavItem
           href="/"

@@ -7,6 +7,7 @@ import { QuestionMarkCircleIcon } from '@heroicons/react/24/outline';
 import { UserIcon } from '@heroicons/react/24/outline';
 
 import SettingsModal from './settingsModal';
+import { ThemeSwitcher } from '@/components/theme-switch';
 
 interface User {
   id: string;
@@ -37,12 +38,12 @@ export default async function ProfilePage() {
   };
 
   return (
-    <div className="flex flex-col min-h-[90vh] bg-[#60BEEB]">
-      <div className="text-white p-6 mt-4">
+    <div className="flex flex-col min-h-[93vh] bg-[#60BEEB] dark:bg-[#115E83]">
+      <div className="text-white dark:text-default-700 p-6 mt-4">
         <div className="flex items-center">
           <Avatar
             src={user.picture}
-            className="w-20 h-20 text-large border-2 border-white"
+            className="w-20 h-20 text-large border-2 border-background"
           />
           <div className="ml-4">
             <h2 className="text-xl font-semibold">{user.name}</h2>
@@ -51,29 +52,29 @@ export default async function ProfilePage() {
         </div>
       </div>
 
-      <div className="flex justify-around bg-white p-4 opacity-85 mx-4 rounded-xl shadow-lg">
+      <div className="flex justify-around bg-background p-4 opacity-85 mx-4 rounded-xl shadow-lg">
         <div className="text-center">
-          <p className="text-2xl font-bold text-blue-600">
+          <p className="text-2xl font-bold text-default-800">
             {stats.mealsLogged}
           </p>
-          <p className="text-xs text-gray-500">Meals logged</p>
+          <p className="text-xs text-default-500">Meals logged</p>
         </div>
         <div className="text-center">
-          <p className="text-2xl font-bold text-green-600">
+          <p className="text-2xl font-bold text-default-800">
             {stats.totalOrders}
           </p>
-          <p className="text-xs text-gray-500">Total orders</p>
+          <p className="text-xs text-default-500">Total orders</p>
         </div>
         <div className="text-center">
-          <p className="text-2xl font-bold text-purple-600">
+          <p className="text-2xl font-bold text-default-800">
             {stats.dishesEaten}
           </p>
-          <p className="text-xs text-gray-500">Dishes eaten</p>
+          <p className="text-xs text-default-500">Dishes eaten</p>
         </div>
       </div>
 
       {/* Settings Options */}
-      <div className="flex flex-col flex-1 mt-8 bg-white rounded-t-2xl px-1 py-4">
+      <div className="flex flex-col flex-1 mt-8 bg-background rounded-t-2xl px-1 py-4">
         {[
           {
             label: 'Edit Profile',
@@ -91,7 +92,7 @@ export default async function ProfilePage() {
           <Button
             key={index}
             variant="light"
-            className="justify-start py-2 mb-2 text-md"
+            className="justify-start py-2 mb-2 text-md text-default-800"
             startContent={<item.icon className="w-6 h-6 mr-2" />}
           >
             {item.label}
