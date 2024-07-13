@@ -13,7 +13,7 @@ interface Dish {
 export default function MenuItem({ dish }: { dish: Dish }) {
   return (
     <Card className="border-none" shadow="md">
-      <Link href={`/${dish.id}`} className="relative aspect-square">
+      <Link href={`/menuItems/${dish.id}`} className="relative aspect-square">
         <NextImage
           src={dish.imageUrl}
           alt={dish.name}

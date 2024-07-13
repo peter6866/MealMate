@@ -1,3 +1,4 @@
+import React from 'react';
 import MenuItem from './menuItem';
 import axios from 'axios';
 import { cookies } from 'next/headers';
@@ -9,12 +10,21 @@ interface Dish {
   imageUrl: string;
 }
 
-export default async function MenuItemList() {
+async function fetchMenuItems() {
   const response = await axios.get(
     `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/menuItems`
   );
 
-  const dishes = response.data;
+  return response.data;
+}
+
+export default async function MenuItemList() {
+  const dishes = await fetchMenuItems();
+
+  if (!dishes.length) {
+    return null;
+  }
+
   return (
     <div className="grid grid-cols-2 gap-4">
       {dishes.map((dish: Dish) => (
