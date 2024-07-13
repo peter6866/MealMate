@@ -1,12 +1,10 @@
-'use client';
-
 import { title } from '@/components/primitives';
 
 import { Input } from '@nextui-org/react';
 import { Button } from '@nextui-org/button';
-import { Image } from '@nextui-org/react';
-import NextImage from 'next/image';
+import { Suspense } from 'react';
 import MenuItemList from './menuItemList';
+import HomeSkeleton from '@/components/homeSkeleton';
 
 const filterCategories = ['All', 'Italian', 'Indian', 'Salads', 'Pizza'];
 
@@ -44,7 +42,9 @@ export default function HomePage() {
         ))}
       </div>
 
-      <MenuItemList />
+      <Suspense fallback={<HomeSkeleton />}>
+        <MenuItemList />
+      </Suspense>
     </div>
   );
 }

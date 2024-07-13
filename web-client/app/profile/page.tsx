@@ -7,7 +7,6 @@ import { QuestionMarkCircleIcon } from '@heroicons/react/24/outline';
 import { UserIcon } from '@heroicons/react/24/outline';
 
 import SettingsModal from './settingsModal';
-import { ThemeSwitcher } from '@/components/theme-switch';
 
 interface User {
   id: string;

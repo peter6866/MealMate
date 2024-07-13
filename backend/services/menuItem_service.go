@@ -30,6 +30,20 @@ func (s *MenuItemService) CreateMenuItem(ctx context.Context, item *models.MenuI
 		return errors.New("name and category ID are required")
 	}
 
+	if item.SpiceLevel != "" &&
+		item.SpiceLevel != models.SpiceLevelNone &&
+		item.SpiceLevel != models.SpiceLevelMild &&
+		item.SpiceLevel != models.SpiceLevelMedium &&
+		item.SpiceLevel != models.SpiceLevelHot {
+		return errors.New("invalid spice level")
+	}
+
+	if item.AlcoholContent != "" &&
+		item.AlcoholContent != models.AlcoholContentNone &&
+		item.AlcoholContent != models.AlcoholContentHas {
+		return errors.New("invalid alcohol content")
+	}
+
 	imageUrl, err := utils.UploadFileToS3(&file)
 	if err != nil {
 		return err

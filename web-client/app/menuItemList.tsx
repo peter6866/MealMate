@@ -1,33 +1,24 @@
 import MenuItem from './menuItem';
+import axios from 'axios';
+import { cookies } from 'next/headers';
 
-const dishes = [
-  {
-    name: '回锅肉',
-    image:
-      'https://jh-foodie-bucket.s3.us-east-2.amazonaws.com/1720807291594970000.jpeg',
-  },
-  {
-    name: '水煮牛肉',
-    image:
-      'https://jh-foodie-bucket.s3.us-east-2.amazonaws.com/1720807291594970000.jpeg',
-  },
-  {
-    name: 'Caesar Salad',
-    image:
-      'https://jh-foodie-bucket.s3.us-east-2.amazonaws.com/1720807291594970000.jpeg',
-  },
-  {
-    name: 'Margherita Pizza',
-    image:
-      'https://jh-foodie-bucket.s3.us-east-2.amazonaws.com/1720807291594970000.jpeg',
-  },
-];
+interface Dish {
+  id: string;
+  name: string;
+  categoryName: string;
+  imageUrl: string;
+}
 
-export default function MenuItemList() {
+export default async function MenuItemList() {
+  const response = await axios.get(
+    `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/menuItems`
+  );
+
+  const dishes = response.data;
   return (
     <div className="grid grid-cols-2 gap-4">
-      {dishes.map((dish, index) => (
-        <MenuItem key={index} dish={dish} index={index} />
+      {dishes.map((dish: Dish) => (
+        <MenuItem key={dish.id} dish={dish} />
       ))}
     </div>
   );

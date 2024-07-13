@@ -3,10 +3,10 @@ package utils
 import (
 	"bytes"
 	"fmt"
+	"image"
+	"image/jpeg"
 	"mime/multipart"
-	"net/http"
 	"net/url"
-	"path/filepath"
 	"strings"
 	"time"
 
@@ -14,8 +14,16 @@ import (
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
+	"github.com/disintegration/imaging"
 	"github.com/peter6866/foodie/config"
 )
+
+func minInt(a, b int) int {
+	if a < b {
+		return a
+	}
+	return b
+}
 
 func UploadFileToS3(file *multipart.FileHeader) (string, error) {
 	// Open the uploaded file
@@ -25,16 +33,26 @@ func UploadFileToS3(file *multipart.FileHeader) (string, error) {
 	}
 	defer src.Close()
 
-	// Read the content of the uploaded file
-	size := file.Size
-	buffer := make([]byte, size)
-	_, err = src.Read(buffer)
+	// Decode the image
+	img, _, err := image.Decode(src)
+	if err != nil {
+		return "", err
+	}
+
+	size := minInt(img.Bounds().Dx(), img.Bounds().Dy())
+
+	// resize and crop to a square
+	resizedImg := imaging.Fill(img, size, size, imaging.Center, imaging.Lanczos)
+
+	// create a buffer to store the resized image
+	buf := new(bytes.Buffer)
+	err = jpeg.Encode(buf, resizedImg, &jpeg.Options{Quality: 70})
 	if err != nil {
 		return "", err
 	}
 
 	// create a unique file name
-	filename := fmt.Sprintf("%d%s", time.Now().UnixNano(), filepath.Ext(file.Filename))
+	filename := fmt.Sprintf("%d%s", time.Now().UnixNano(), ".jpg")
 
 	// configure aws session
 	sess, err := session.NewSession(&aws.Config{
@@ -54,9 +72,9 @@ func UploadFileToS3(file *multipart.FileHeader) (string, error) {
 	_, err = svc.PutObject(&s3.PutObjectInput{
 		Bucket:               aws.String(config.AppConfig.AWS_S3_BUCKET),
 		Key:                  aws.String(filename),
-		Body:                 bytes.NewReader(buffer),
-		ContentLength:        aws.Int64(int64(size)),
-		ContentType:          aws.String(http.DetectContentType(buffer)),
+		Body:                 bytes.NewReader(buf.Bytes()),
+		ContentLength:        aws.Int64(int64(buf.Len())),
+		ContentType:          aws.String("image/jpeg"),
 		ContentDisposition:   aws.String("attachment"),
 		ServerSideEncryption: aws.String("AES256"),
 	})
