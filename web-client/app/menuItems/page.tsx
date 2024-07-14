@@ -2,22 +2,28 @@ import { Button } from '@nextui-org/button';
 import React, { Suspense } from 'react';
 import MenuItemList from './menuItemList';
 import HomeSkeleton from '@/components/homeSkeleton';
+import Filter from '@/components/Filter';
 
-const filterCategories = ['All', 'Italian', 'Indian', 'Salads', 'Pizza'];
+interface searchParamsProps {
+  category: string;
+  spiceLevel: string;
+  alcoholContent: string;
+}
 
-export default function HomePage() {
+export default function HomePage({
+  searchParams,
+}: {
+  searchParams: searchParamsProps;
+}) {
   return (
     <div className="min-h-screen bg-content1 p-4">
-      <div className="mb-4 overflow-x-auto whitespace-nowrap">
-        {filterCategories.map((category) => (
-          <Button key={category} size="sm" className="mr-2">
-            {category}
-          </Button>
-        ))}
-      </div>
+      <Filter />
 
-      <Suspense fallback={<HomeSkeleton />}>
-        <MenuItemList />
+      <Suspense
+        fallback={<HomeSkeleton />}
+        key={`${searchParams.category}${searchParams.alcoholContent}${searchParams.spiceLevel}`}
+      >
+        <MenuItemList filter={searchParams} />
       </Suspense>
     </div>
   );

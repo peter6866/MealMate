@@ -8,6 +8,14 @@ interface Dish {
   name: string;
   categoryName: string;
   imageUrl: string;
+  spiceLevel: string;
+  alcoholContent: string;
+}
+
+interface searchParamsProps {
+  category?: string;
+  spiceLevel?: string;
+  alcoholContent?: string;
 }
 
 async function fetchMenuItems() {
@@ -26,16 +34,31 @@ async function fetchMenuItems() {
   return response.data;
 }
 
-export default async function MenuItemList() {
+export default async function MenuItemList({
+  filter,
+}: {
+  filter: searchParamsProps;
+}) {
   const dishes = await fetchMenuItems();
 
   if (!dishes.length) {
     return null;
   }
 
+  const { category, spiceLevel, alcoholContent } = filter;
+
+  const filteredDishes = dishes.filter((dish: Dish) => {
+    const categoryMatch = !category || dish.categoryName === category;
+    const spiceLevelMatch = !spiceLevel || dish.spiceLevel === spiceLevel;
+    const alcoholContentMatch =
+      !alcoholContent || dish.alcoholContent === alcoholContent;
+
+    return categoryMatch && spiceLevelMatch && alcoholContentMatch;
+  });
+
   return (
     <div className="grid grid-cols-2 gap-4">
-      {dishes.map((dish: Dish) => (
+      {filteredDishes.map((dish: Dish) => (
         <MenuItem key={dish.id} dish={dish} />
       ))}
     </div>

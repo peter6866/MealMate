@@ -10,12 +10,12 @@ type SpiceLevel string
 type AlcoholContent string
 
 const (
-	SpiceLevelNone   SpiceLevel = "Not Spicy"
+	SpiceLevelNone   SpiceLevel = "NotSpicy"
 	SpiceLevelMild   SpiceLevel = "Mild"
 	SpiceLevelMedium SpiceLevel = "Spicy"
-	SpiceLevelHot    SpiceLevel = "Very Spicy"
+	SpiceLevelHot    SpiceLevel = "VerySpicy"
 
-	AlcoholContentNone AlcoholContent = "Non-Alcoholic"
+	AlcoholContentNone AlcoholContent = "NonAlcoholic"
 	AlcoholContentHas  AlcoholContent = "Alcoholic"
 )
 
