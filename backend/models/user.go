@@ -17,11 +17,13 @@ type User struct {
 	UpdatedAt    time.Time            `bson:"updatedAt" json:"updatedAt"`
 	LastLoginAt  time.Time            `bson:"lastLoginAt" json:"lastLoginAt"`
 	Picture      string               `bson:"picture,omitempty" json:"picture,omitempty"`
+	IsChef       bool                 `bson:"isChef,omitempty" json:"isChef,omitempty"`
+	PartnerEmail string               `bson:"partnerEmail,omitempty" json:"partnerEmail,omitempty"`
 }
 
 const (
-	RoleAdmin = "admin"
-	RoleUser  = "user"
+	RoleChef = "chef"
+	RoleUser = "user"
 )
 
 // NewUser creates a new user instance
@@ -64,5 +66,5 @@ func (u *User) RemoveOrder(orderID primitive.ObjectID) {
 
 // IsAdmin checks if the user is an admin
 func (u *User) IsAdmin() bool {
-	return u.Role == RoleAdmin
+	return u.Role == RoleChef
 }

@@ -11,8 +11,16 @@ interface Dish {
 }
 
 async function fetchMenuItems() {
+  const cookieStore = cookies();
+  const token = cookieStore.get('token')!.value;
+
   const response = await axios.get(
-    `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/menuItems`
+    `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/menuItems`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
   );
 
   return response.data;

@@ -40,17 +40,6 @@ export async function generateMetadata({ params }: { params: any }) {
   }
 }
 
-export async function generateStaticParams() {
-  const response = await axios.get(
-    `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/menuItems`
-  );
-
-  const dishes = response.data;
-  return dishes.map((dish: Dish) => ({
-    menuItemId: dish.id,
-  }));
-}
-
 export default async function MenuItem({ params }: { params: any }) {
   try {
     const cookieStore = cookies();

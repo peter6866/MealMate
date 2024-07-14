@@ -28,7 +28,7 @@ export async function GET(request: NextRequest) {
       sameSite: 'lax',
     });
 
-    const redirectUrl = new URL('/', request.url);
+    const redirectUrl = new URL('/menuItems', request.url);
 
     return NextResponse.redirect(redirectUrl);
   } catch (error) {

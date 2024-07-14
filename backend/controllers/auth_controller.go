@@ -91,11 +91,38 @@ func (c *AuthController) LoginOrRegister(context *gin.Context) {
 
 func (c *AuthController) GetUser(context *gin.Context) {
 	userID, _ := context.Get("userID")
-	user, err := c.userService.GetUser(userID.(string))
+	user, err := c.userService.GetUser(context.Request.Context(), userID.(string))
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get user"})
 		return
 	}
 
 	context.JSON(http.StatusOK, user)
+}
+
+func (c *AuthController) SetChefAndPartner(context *gin.Context) {
+	var requestBody struct {
+		IsChef       bool   `json:"isChef"`
+		PartnerEmail string `json:"partnerEmail"`
+	}
+
+	if err := context.BindJSON(&requestBody); err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request body"})
+		return
+	}
+
+	ctx := context.Request.Context()
+
+	userID, _ := context.Get("userID")
+	updatedUser, err := c.userService.SetChefAndPartner(ctx, userID.(string), requestBody.IsChef, requestBody.PartnerEmail)
+	if err != nil {
+		// if the err has a message, return the message
+		if err.Error() != "" {
+			context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+		context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to set chef and partner"})
+	}
+
+	context.JSON(http.StatusOK, updatedUser)
 }

@@ -2,6 +2,7 @@ package services
 
 import (
 	"context"
+	"errors"
 
 	"github.com/peter6866/foodie/models"
 	"github.com/peter6866/foodie/repositories"
@@ -32,24 +33,71 @@ func (s *UserService) FindOrCreateUser(ctx context.Context, name, email, googleI
 // Create a new user
 func (s *UserService) CreateUser(ctx context.Context, name, email, googleID, role, picture string) (*models.User, error) {
 	user := models.NewUser(name, email, googleID, role, picture)
-	err := s.repo.Create(ctx, user)
+	userId, err := s.repo.Create(ctx, user)
 	if err != nil {
 		return nil, err
 	}
+	user.ID = userId
 	return user, nil
 }
 
 // Find a user by ID
-func (s *UserService) GetUser(id string) (*models.User, error) {
+func (s *UserService) GetUser(ctx context.Context, id string) (*models.User, error) {
 	objectID, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		return nil, err
 	}
-	return s.repo.FindByID(objectID)
+	return s.repo.FindByID(ctx, objectID)
 }
 
-func (s *UserService) UpdateUser(user *models.User) error {
-	return s.repo.Update(user)
+// find a user by email
+func (s *UserService) GetUserByEmail(ctx context.Context, email string) (*models.User, error) {
+	return s.repo.FindByEmail(ctx, email)
+}
+
+func (s *UserService) SetChefAndPartner(ctx context.Context, userID string, isChef bool, partnerEmail string) (*models.User, error) {
+	user, err := s.GetUser(ctx, userID)
+	if err != nil {
+		return nil, err
+	}
+
+	if user.Email == partnerEmail {
+		return nil, errors.New("cannot set your partner as yourself")
+	}
+
+	// check if parter exists
+	partnerUser, err := s.GetUserByEmail(ctx, partnerEmail)
+	if err != nil {
+		// if partner does not exist, can set isChef to true or false
+		if err == mongo.ErrNoDocuments {
+			user.IsChef = isChef
+		} else {
+			return nil, err
+		}
+	} else {
+		// if partner exists, can only set isChef to true if partner is not a chef
+		if partnerUser.IsChef && isChef {
+			return nil, errors.New("partner is already a chef")
+		}
+
+		// if partner is not a chef, user can only be chef
+		if !partnerUser.IsChef && !isChef {
+			return nil, errors.New("partner is not a chef, you can only be a chef")
+		}
+		user.IsChef = isChef
+	}
+
+	user.PartnerEmail = partnerEmail
+	err = s.UpdateUser(ctx, user)
+	if err != nil {
+		return nil, err
+	}
+
+	return user, nil
+}
+
+func (s *UserService) UpdateUser(ctx context.Context, user *models.User) error {
+	return s.repo.Update(ctx, user)
 }
 
 func (s *UserService) AddOrderToUser(userID, orderID primitive.ObjectID) error {

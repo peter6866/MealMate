@@ -6,10 +6,10 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func AdminMiddleware() gin.HandlerFunc {
+func ChefMiddleware() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		role, _ := ctx.Get("role")
-		if role != "admin" {
+		if role != "chef" {
 			ctx.AbortWithStatusJSON(http.StatusForbidden, gin.H{"error": "Forbidden"})
 			return
 		}

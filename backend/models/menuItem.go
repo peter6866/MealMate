@@ -27,6 +27,7 @@ type MenuItem struct {
 	SpiceLevel     SpiceLevel         `bson:"spiceLevel,omitempry" json:"spiceLevel,omitempty"`
 	AlcoholContent AlcoholContent     `bson:"alcoholContent,omitempty" json:"alcoholContent,omitempty"`
 	ReferenceLink  string             `bson:"referenceLink,omitempty" json:"referenceLink,omitempty"`
+	CreatedBy      primitive.ObjectID `bson:"createdBy" json:"createdBy"`
 	CreatedAt      time.Time          `bson:"createdAt" json:"createdAt"`
 	UpdatedAt      time.Time          `bson:"updatedAt" json:"updatedAt"`
 }

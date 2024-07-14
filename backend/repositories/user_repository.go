@@ -18,16 +18,19 @@ func NewUserRepository(client *mongo.Client) *UserRepository {
 	return &UserRepository{collection: collection}
 }
 
-// create a new user
-func (r *UserRepository) Create(ctx context.Context, user *models.User) error {
-	_, err := r.collection.InsertOne(ctx, user)
-	return err
+// create a new user and return its id
+func (r *UserRepository) Create(ctx context.Context, user *models.User) (primitive.ObjectID, error) {
+	res, err := r.collection.InsertOne(ctx, user)
+	if err != nil {
+		return primitive.NilObjectID, err
+	}
+	return res.InsertedID.(primitive.ObjectID), nil
 }
 
 // find a user by ID
-func (r *UserRepository) FindByID(id primitive.ObjectID) (*models.User, error) {
+func (r *UserRepository) FindByID(ctx context.Context, id primitive.ObjectID) (*models.User, error) {
 	var user models.User
-	err := r.collection.FindOne(context.Background(), bson.M{"_id": id}).Decode(&user)
+	err := r.collection.FindOne(ctx, bson.M{"_id": id}).Decode(&user)
 	if err != nil {
 		return nil, err
 	}
@@ -44,10 +47,24 @@ func (r *UserRepository) FindByGoogleID(ctx context.Context, googleId string) (*
 	return &user, nil
 }
 
+// find by email
+func (r *UserRepository) FindByEmail(ctx context.Context, email string) (*models.User, error) {
+	var user models.User
+	err := r.collection.FindOne(ctx, bson.M{"email": email}).Decode(&user)
+	// if user does not exist, return not found error
+	if err == mongo.ErrNoDocuments {
+		return nil, mongo.ErrNoDocuments
+	}
+	if err != nil {
+		return nil, err
+	}
+	return &user, nil
+}
+
 // Update a user
-func (r *UserRepository) Update(user *models.User) error {
+func (r *UserRepository) Update(ctx context.Context, user *models.User) error {
 	_, err := r.collection.UpdateOne(
-		context.Background(),
+		ctx,
 		bson.M{"_id": user.ID},
 		bson.M{"$set": user},
 	)

@@ -55,7 +55,7 @@ export const Navbar = () => {
     <div className="fixed bottom-0 left-0 z-50 w-full h-16 border-t border-gray-200 bg-white dark:bg-default-100 dark:border-0">
       <div className="grid h-full max-w-lg grid-cols-5 mx-auto font-medium">
         <NavItem
-          href="/"
+          href="/menuItems"
           icon={MagnifyingGlassIcon}
           solidIcon={SearchSolid}
           label="Discover"

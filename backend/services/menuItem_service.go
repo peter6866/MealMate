@@ -15,17 +15,28 @@ import (
 type MenuItemService struct {
 	menuItemRepo *repositories.MenuItemRepository
 	categoryRepo *repositories.CategoryRepository
+	userRepo     *repositories.UserRepository
 }
 
-func NewMenuItemService(menuItemRepo *repositories.MenuItemRepository, categoryRepo *repositories.CategoryRepository) *MenuItemService {
+func NewMenuItemService(menuItemRepo *repositories.MenuItemRepository,
+	categoryRepo *repositories.CategoryRepository,
+	userRepo *repositories.UserRepository,
+) *MenuItemService {
 	return &MenuItemService{
 		menuItemRepo: menuItemRepo,
 		categoryRepo: categoryRepo,
+		userRepo:     userRepo,
 	}
 }
 
 // Create a new menu item
-func (s *MenuItemService) CreateMenuItem(ctx context.Context, item *models.MenuItem, file multipart.FileHeader) error {
+func (s *MenuItemService) CreateMenuItem(ctx context.Context, userID string, item *models.MenuItem, file multipart.FileHeader) error {
+	userObjectId, err := primitive.ObjectIDFromHex(userID)
+	if err != nil {
+		return errors.New("invalid user ID")
+	}
+
+	item.CreatedBy = userObjectId
 	if item.Name == "" || item.CategoryID.IsZero() {
 		return errors.New("name and category ID are required")
 	}
@@ -64,15 +75,46 @@ type MenuItemWithCategory struct {
 	CategoryName string `json:"categoryName"`
 }
 
-func (s *MenuItemService) GetMenuItem(ctx context.Context, id string) (*MenuItemWithCategory, error) {
+// get the menu item only if you created it or your partner created it
+func (s *MenuItemService) GetMenuItem(ctx context.Context, id string, userID string) (*MenuItemWithCategory, error) {
 	objectID, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		return nil, errors.New("invalid ID")
 	}
 
-	menuItem, err := s.menuItemRepo.GetByID(ctx, objectID)
+	userObjectId, err := primitive.ObjectIDFromHex(userID)
+	if err != nil {
+		return nil, errors.New("invalid user ID")
+	}
+
+	user, err := s.userRepo.FindByID(ctx, userObjectId)
 	if err != nil {
 		return nil, err
+	}
+
+	var menuItem *models.MenuItem
+
+	if user.Role == models.RoleChef {
+		menuItem, err = s.menuItemRepo.GetByID(ctx, objectID, userObjectId)
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		if user.PartnerEmail == "" {
+			return nil, errors.New("you do not have a partner")
+		}
+		partnerUser, err := s.userRepo.FindByEmail(ctx, user.PartnerEmail)
+		if err != nil {
+			return nil, err
+		}
+		menuItem, err = s.menuItemRepo.GetByID(ctx, objectID, partnerUser.ID)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	if menuItem == nil {
+		return nil, errors.New("menu item not found")
 	}
 
 	category, err := s.categoryRepo.GetByID(ctx, menuItem.CategoryID)
@@ -86,10 +128,37 @@ func (s *MenuItemService) GetMenuItem(ctx context.Context, id string) (*MenuItem
 	}, nil
 }
 
-func (s *MenuItemService) GetAllMenuItems(ctx context.Context) ([]*MenuItemWithCategory, error) {
-	menuItems, err := s.menuItemRepo.GetAll(ctx)
+// get the menu items only if you created them or your partner created them
+func (s *MenuItemService) GetAllMenuItems(ctx context.Context, id string) ([]*MenuItemWithCategory, error) {
+	userID, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return nil, errors.New("invalid user ID")
+	}
+
+	user, err := s.userRepo.FindByID(ctx, userID)
 	if err != nil {
 		return nil, err
+	}
+
+	var menuItems []*models.MenuItem
+
+	if user.Role == models.RoleChef {
+		menuItems, err = s.menuItemRepo.GetAll(ctx, userID)
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		if user.PartnerEmail == "" {
+			return nil, errors.New("you do not have a partner")
+		}
+		partnerUser, err := s.userRepo.FindByEmail(ctx, user.PartnerEmail)
+		if err != nil {
+			return nil, err
+		}
+		menuItems, err = s.menuItemRepo.GetAll(ctx, partnerUser.ID)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	menuItemsWithCategory := make([]*MenuItemWithCategory, len(menuItems))
@@ -107,6 +176,7 @@ func (s *MenuItemService) GetAllMenuItems(ctx context.Context) ([]*MenuItemWithC
 	return menuItemsWithCategory, nil
 }
 
+// TODO:
 func (s *MenuItemService) UpdateMenuItem(ctx context.Context, menuItem *models.MenuItem) error {
 	if menuItem.ID.IsZero() {
 		return errors.New("menu item ID is required")
@@ -117,13 +187,18 @@ func (s *MenuItemService) UpdateMenuItem(ctx context.Context, menuItem *models.M
 	return s.menuItemRepo.Update(ctx, menuItem)
 }
 
-func (s *MenuItemService) DeleteMenuItem(ctx context.Context, id string) error {
+func (s *MenuItemService) DeleteMenuItem(ctx context.Context, id string, userID string) error {
 	objectID, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		return errors.New("invalid ID")
 	}
 
-	menuItem, err := s.menuItemRepo.GetByID(ctx, objectID)
+	userObjectId, err := primitive.ObjectIDFromHex(userID)
+	if err != nil {
+		return errors.New("invalid user ID")
+	}
+
+	menuItem, err := s.menuItemRepo.GetByID(ctx, objectID, userObjectId)
 	if err != nil {
 		return err
 	}

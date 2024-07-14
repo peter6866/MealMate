@@ -51,9 +51,10 @@ func (c *MenuItemController) CreateMenuItem(ctx *gin.Context) {
 		return
 	}
 
+	userID, _ := ctx.Get("userID")
 	menuItem.CategoryID = categoryId
 
-	err = c.menuItemService.CreateMenuItem(ctx.Request.Context(), &menuItem, *file)
+	err = c.menuItemService.CreateMenuItem(ctx.Request.Context(), userID.(string), &menuItem, *file)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -64,7 +65,8 @@ func (c *MenuItemController) CreateMenuItem(ctx *gin.Context) {
 
 func (c *MenuItemController) GetMenuItem(ctx *gin.Context) {
 	id := ctx.Param("id")
-	menuItem, err := c.menuItemService.GetMenuItem(ctx.Request.Context(), id)
+	userID, _ := ctx.Get("userID")
+	menuItem, err := c.menuItemService.GetMenuItem(ctx.Request.Context(), id, userID.(string))
 	if err != nil {
 		ctx.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
@@ -80,8 +82,9 @@ func (c *MenuItemController) GetMenuItem(ctx *gin.Context) {
 
 func (c *MenuItemController) DeleteMenuItem(ctx *gin.Context) {
 	id := ctx.Param("id")
+	userID, _ := ctx.Get("userID")
 
-	err := c.menuItemService.DeleteMenuItem(ctx.Request.Context(), id)
+	err := c.menuItemService.DeleteMenuItem(ctx.Request.Context(), id, userID.(string))
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -91,7 +94,8 @@ func (c *MenuItemController) DeleteMenuItem(ctx *gin.Context) {
 }
 
 func (c *MenuItemController) GetAllMenuItems(ctx *gin.Context) {
-	menuItems, err := c.menuItemService.GetAllMenuItems(ctx.Request.Context())
+	userID, _ := ctx.Get("userID")
+	menuItems, err := c.menuItemService.GetAllMenuItems(ctx.Request.Context(), userID.(string))
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

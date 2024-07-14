@@ -35,10 +35,9 @@ func SetupRouter(client *mongo.Client) *gin.Engine {
 	categoryController := controllers.NewCategoryController(categoryService)
 
 	menuItemRepo := repositories.NewMenuItemRepository(client)
-	menuItemService := services.NewMenuItemService(menuItemRepo, categoryRepo)
+	menuItemService := services.NewMenuItemService(menuItemRepo, categoryRepo, userRepo)
 	menuItemController := controllers.NewMenuItemController(menuItemService)
 
-	router.GET("/api/menuItems", menuItemController.GetAllMenuItems)
 	router.GET("/api/categories", categoryController.GetAllCategories)
 
 	// Authenticated routes
@@ -46,19 +45,21 @@ func SetupRouter(client *mongo.Client) *gin.Engine {
 	authenticatedRoutes.Use(middlewares.AuthMiddleware)
 	{
 		authenticatedRoutes.GET("/auth/getUser", authController.GetUser)
+		authenticatedRoutes.POST("/auth/setChefAndPartner", authController.SetChefAndPartner)
 
 		menuItemRoutes := authenticatedRoutes.Group("/menuItems")
 		{
 			menuItemRoutes.GET("/:id", menuItemController.GetMenuItem)
 
-			menuItemRoutes.POST("", middlewares.AdminMiddleware(), menuItemController.CreateMenuItem)
-			// menuItemRoutes.PUT("/:id", middlewares.AdminMiddleware(), menuItemController.UpdateMenuItem)
-			menuItemRoutes.DELETE("/:id", middlewares.AdminMiddleware(), menuItemController.DeleteMenuItem)
+			menuItemRoutes.GET("", menuItemController.GetAllMenuItems)
+			menuItemRoutes.POST("", middlewares.ChefMiddleware(), menuItemController.CreateMenuItem)
+			// menuItemRoutes.PUT("/:id", middlewares.ChefMiddleware(), menuItemController.UpdateMenuItem)
+			menuItemRoutes.DELETE("/:id", middlewares.ChefMiddleware(), menuItemController.DeleteMenuItem)
 		}
 
 		categoryRoutes := authenticatedRoutes.Group("/categories")
 		{
-			categoryRoutes.POST("", middlewares.AdminMiddleware(), categoryController.CreateCategory)
+			categoryRoutes.POST("", middlewares.ChefMiddleware(), categoryController.CreateCategory)
 		}
 	}
 

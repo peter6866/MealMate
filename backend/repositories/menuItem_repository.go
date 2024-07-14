@@ -29,10 +29,10 @@ func (r *MenuItemRepository) Create(ctx context.Context, menuItem *models.MenuIt
 	return err
 }
 
-// get a menu item by ID
-func (r *MenuItemRepository) GetByID(ctx context.Context, id primitive.ObjectID) (*models.MenuItem, error) {
+// get a menu item by ID and createdBy the userID
+func (r *MenuItemRepository) GetByID(ctx context.Context, id primitive.ObjectID, userID primitive.ObjectID) (*models.MenuItem, error) {
 	var item models.MenuItem
-	err := r.collection.FindOne(ctx, bson.M{"_id": id}).Decode(&item)
+	err := r.collection.FindOne(ctx, bson.M{"_id": id, "createdBy": userID}).Decode(&item)
 	if err != nil {
 		if errors.Is(err, mongo.ErrNoDocuments) {
 			return nil, nil
@@ -42,9 +42,9 @@ func (r *MenuItemRepository) GetByID(ctx context.Context, id primitive.ObjectID)
 	return &item, nil
 }
 
-// get all menu items
-func (r *MenuItemRepository) GetAll(ctx context.Context) ([]*models.MenuItem, error) {
-	cursor, err := r.collection.Find(ctx, bson.M{})
+// get all menu items where createdBy is the userID
+func (r *MenuItemRepository) GetAll(ctx context.Context, userID primitive.ObjectID) ([]*models.MenuItem, error) {
+	cursor, err := r.collection.Find(ctx, bson.M{"createdBy": userID})
 	if err != nil {
 		return nil, err
 	}
