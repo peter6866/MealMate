@@ -7,7 +7,7 @@ export default function NotFound() {
       <div className="w-full max-w-md p-8 space-y-4">
         <div className="w-24 h-24 mx-auto">
           <svg
-            className="w-full h-full text-[#60BEEB]"
+            className="w-full h-full text-mainLight"
             fill="currentColor"
             viewBox="0 0 20 20"
             xmlns="http://www.w3.org/2000/svg"
@@ -27,7 +27,7 @@ export default function NotFound() {
           have been removed or doesn&apos;t exist.
         </p>
         <Link href="/" passHref>
-          <Button as="a" color="primary" className="w-full bg-[#60BEEB] mt-6">
+          <Button as="a" color="primary" className="w-full bg-mainLight mt-6">
             Back to All Items
           </Button>
         </Link>

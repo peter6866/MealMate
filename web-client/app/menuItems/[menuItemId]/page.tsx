@@ -80,7 +80,7 @@ export default async function MenuItem({ params }: { params: any }) {
             <Button
               color="primary"
               size="lg"
-              className="w-full bg-[#60BEEB] dark:bg-[#115E83] text-white text-lg py-3"
+              className="w-full bg-mainLight dark:bg-mainDark text-white text-lg py-3"
             >
               Add to Cart
             </Button>

@@ -94,7 +94,7 @@ func (s *MenuItemService) GetMenuItem(ctx context.Context, id string, userID str
 
 	var menuItem *models.MenuItem
 
-	if user.Role == models.RoleChef {
+	if user.IsChef {
 		menuItem, err = s.menuItemRepo.GetByID(ctx, objectID, userObjectId)
 		if err != nil {
 			return nil, err
@@ -142,7 +142,7 @@ func (s *MenuItemService) GetAllMenuItems(ctx context.Context, id string) ([]*Me
 
 	var menuItems []*models.MenuItem
 
-	if user.Role == models.RoleChef {
+	if user.IsChef {
 		menuItems, err = s.menuItemRepo.GetAll(ctx, userID)
 		if err != nil {
 			return nil, err
@@ -213,21 +213,4 @@ func (s *MenuItemService) DeleteMenuItem(ctx context.Context, id string, userID 
 	}
 
 	return s.menuItemRepo.Delete(ctx, objectID)
-}
-
-// TODO: Implement the following methods
-func (s *MenuItemService) GetMenuItemsByCategory(ctx context.Context, categoryID string) ([]*models.MenuItem, error) {
-	objectID, err := primitive.ObjectIDFromHex(categoryID)
-	if err != nil {
-		return nil, errors.New("invalid category ID")
-	}
-	return s.menuItemRepo.GetByCategory(ctx, objectID)
-}
-
-func (s *MenuItemService) GetMenuItemsBySpiceLevel(ctx context.Context, spiceLevel models.SpiceLevel) ([]*models.MenuItem, error) {
-	return s.menuItemRepo.GetBySpiceLevel(ctx, spiceLevel)
-}
-
-func (s *MenuItemService) GetMenuItemsByAlcoholContent(ctx context.Context, alcoholContent models.AlcoholContent) ([]*models.MenuItem, error) {
-	return s.menuItemRepo.GetByAlcoholContent(ctx, alcoholContent)
 }

@@ -24,7 +24,7 @@ export default function MenuItem({ dish }: { dish: Dish }) {
       </Link>
       <CardFooter className="justify-between">
         <p className="font-medium text-default-800">{dish.name}</p>
-        <PlusCircleIcon className="w-6 h-6 text-[#60BEEB]" />
+        <PlusCircleIcon className="w-6 h-6 text-mainLight" />
       </CardFooter>
     </Card>
   );

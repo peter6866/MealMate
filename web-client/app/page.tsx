@@ -1,6 +1,6 @@
 'use client';
 
-import GoogleLogin from '@/components/GoogleLogin';
+import GoogleLogin from '@/components/Auth/GoogleLogin';
 import { Button } from '@nextui-org/button';
 import { Card } from '@nextui-org/card';
 import Image from 'next/image';
@@ -8,7 +8,7 @@ import icon from '@/app/logo.png';
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#60BEEB] to-[#3A95BD] flex flex-col justify-between">
+    <div className="min-h-screen bg-gradient-to-b from-mainLight to-[#3A95BD] flex flex-col justify-between">
       <div className="flex flex-col items-center justify-center flex-grow text-center px-4 pt-12 pb-20">
         <Image
           src={icon}
@@ -22,7 +22,7 @@ export default function LandingPage() {
           Your Couple's Culinary Companion
         </p>
         <Card className="w-full max-w-md p-6 bg-white/90 backdrop-blur-sm justify-between items-center">
-          <h2 className="mb-4 text-2xl font-semibold text-[#60BEEB]">
+          <h2 className="mb-4 text-2xl font-semibold text-mainLight">
             Get Started
           </h2>
           <p className="mb-6 text-sm">
@@ -37,7 +37,7 @@ export default function LandingPage() {
       </div>
 
       <div className="bg-white/90 backdrop-blur-sm py-8 px-4">
-        <h3 className="text-2xl font-semibold mb-6 text-center text-[#60BEEB]">
+        <h3 className="text-2xl font-semibold mb-6 text-center text-mainLight">
           Why Couples Love Foodie
         </h3>
         <div className="grid grid-cols-2 gap-6">
@@ -66,7 +66,7 @@ export default function LandingPage() {
 
       {/* How It Works */}
       <div className="bg-white/90 backdrop-blur-sm py-6 px-4">
-        <h3 className="text-2xl font-semibold mb-6 text-center text-[#60BEEB]">
+        <h3 className="text-2xl font-semibold mb-6 text-center text-mainLight">
           How Foodie Works
         </h3>
         <div className="grid grid-cols-2 gap-4">
@@ -79,13 +79,13 @@ export default function LandingPage() {
 
       {/* Call to Action */}
       <div className="bg-white/90 backdrop-blur-sm py-8 px-4 text-center">
-        <h3 className="text-2xl font-semibold mb-4 text-[#60BEEB]">
+        <h3 className="text-2xl font-semibold mb-4 text-mainLight">
           Ready to Spice Up Your Relationship?
         </h3>
         <Button
           color="primary"
           size="lg"
-          className="bg-[#60BEEB]"
+          className="bg-mainLight"
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
         >
           Get Started Now
@@ -124,7 +124,7 @@ function StepItem({
 }) {
   return (
     <Card className="p-4 flex flex-col items-center justify-center h-32">
-      <div className="flex items-center justify-center w-8 h-8 rounded-full bg-[#60BEEB] text-white font-bold mb-2">
+      <div className="flex items-center justify-center w-8 h-8 rounded-full bg-mainLight text-white font-bold mb-2">
         {number}
       </div>
       <p className="text-2xl mb-1">{icon}</p>

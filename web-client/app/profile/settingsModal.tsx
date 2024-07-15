@@ -5,7 +5,7 @@ import { Modal, ModalContent, ModalHeader, ModalBody } from '@nextui-org/modal';
 import { Button } from '@nextui-org/button';
 import { useDisclosure } from '@nextui-org/react';
 import { Cog6ToothIcon } from '@heroicons/react/24/outline';
-import LogoutButton from '@/components/LogoutButton';
+import LogoutButton from '@/components/Auth/LogoutButton';
 import { ThemeSwitcher } from '@/components/theme-switch';
 
 export default function SettingsModal() {

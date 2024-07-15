@@ -37,7 +37,7 @@ export default async function ProfilePage() {
   };
 
   return (
-    <div className="flex flex-col min-h-[93vh] bg-[#60BEEB] dark:bg-[#115E83]">
+    <div className="flex flex-col min-h-[93vh] bg-mainLight dark:bg-mainDark">
       <div className="text-white dark:text-default-700 p-6 mt-4">
         <div className="flex items-center">
           <Avatar

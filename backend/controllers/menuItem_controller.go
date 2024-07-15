@@ -103,39 +103,3 @@ func (c *MenuItemController) GetAllMenuItems(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, menuItems)
 }
-
-func (c *MenuItemController) GetMenuItemsByCategory(ctx *gin.Context) {
-	categoryID := ctx.Query("category")
-
-	menuItems, err := c.menuItemService.GetMenuItemsByCategory(ctx.Request.Context(), categoryID)
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-
-	ctx.JSON(http.StatusOK, menuItems)
-}
-
-func (c *MenuItemController) GetMenuItemsBySpiceLevel(ctx *gin.Context) {
-	spiceLevel := ctx.Query("spiceLevel")
-
-	menuItems, err := c.menuItemService.GetMenuItemsBySpiceLevel(ctx.Request.Context(), models.SpiceLevel(spiceLevel))
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-
-	ctx.JSON(http.StatusOK, menuItems)
-}
-
-func (c *MenuItemController) GetMenuItemsByAlcoholContent(ctx *gin.Context) {
-	alcoholContent := ctx.Query("alcoholContent")
-
-	menuItems, err := c.menuItemService.GetMenuItemsByAlcoholContent(ctx.Request.Context(), models.AlcoholContent(alcoholContent))
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-
-	ctx.JSON(http.StatusOK, menuItems)
-}
