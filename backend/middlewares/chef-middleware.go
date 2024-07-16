@@ -14,7 +14,7 @@ func ChefMiddleware() gin.HandlerFunc {
 		client := config.MongoClient
 		userRepo := repositories.NewUserRepository(client)
 		userService := services.NewUserService(userRepo)
-		userId, _ := ctx.Get("userId")
+		userId, _ := ctx.Get("userID")
 
 		user, err := userService.GetUser(ctx.Request.Context(), userId.(string))
 		if err != nil {

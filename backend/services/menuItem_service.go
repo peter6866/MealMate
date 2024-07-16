@@ -41,6 +41,10 @@ func (s *MenuItemService) CreateMenuItem(ctx context.Context, userID string, ite
 		return errors.New("name and category ID are required")
 	}
 
+	if item.AlcoholContent == "" && item.SpiceLevel == "" {
+		return errors.New("missing alcohol content or spice level")
+	}
+
 	if item.SpiceLevel != "" &&
 		item.SpiceLevel != models.SpiceLevelNone &&
 		item.SpiceLevel != models.SpiceLevelMild &&

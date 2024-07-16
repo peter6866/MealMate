@@ -2,8 +2,6 @@
 
 import { cookies } from 'next/headers';
 import axios from 'axios';
-import { redirect } from 'next/navigation';
-import { revalidatePath } from 'next/cache';
 
 export async function setChef(prevState: any, formData: any) {
   const email = formData.get('partner-email');

@@ -46,6 +46,10 @@ export async function middleware(req: NextRequest) {
     );
   }
 
+  if (req.nextUrl.pathname === '/menuItems/create' && !data.isChef) {
+    return NextResponse.redirect(new URL('/menuItems', req.nextUrl));
+  }
+
   return NextResponse.next();
 }
 

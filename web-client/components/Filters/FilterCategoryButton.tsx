@@ -4,7 +4,7 @@ import { Button } from '@nextui-org/button';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 interface Category {
-  id: number;
+  id: string;
   name: string;
 }
 

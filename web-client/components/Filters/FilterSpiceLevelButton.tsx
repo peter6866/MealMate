@@ -4,7 +4,7 @@ import { Button } from '@nextui-org/button';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 interface SpiceLevel {
-  id: number;
+  id: string;
   value: string;
   label: string;
 }

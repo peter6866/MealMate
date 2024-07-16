@@ -3,34 +3,34 @@ import FilterCategoryButton from './FilterCategoryButton';
 import FilterSpiceLevelButton from './FilterSpiceLevelButton';
 
 interface Category {
-  id: number;
+  id: string;
   name: string;
 }
 
 interface SpiceLevel {
-  id: number;
+  id: string;
   value: string;
   label: string;
 }
 
 const spiceLevels = [
   {
-    id: 1,
+    id: '1',
     value: 'NotSpicy',
     label: 'Not Spicy',
   },
   {
-    id: 2,
+    id: '2',
     value: 'Mild',
     label: 'Mild',
   },
   {
-    id: 3,
+    id: '3',
     value: 'Spicy',
     label: 'Spicy',
   },
   {
-    id: 4,
+    id: '4',
     value: 'VerySpicy',
     label: 'Very Spicy',
   },

@@ -28,7 +28,7 @@ func (c *MenuItemController) CreateMenuItem(ctx *gin.Context) {
 
 	categoryIdStr := ctx.Request.FormValue("categoryId")
 	if categoryIdStr == "" {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Category ID is required"})
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Please select a category"})
 		return
 	}
 
@@ -56,6 +56,11 @@ func (c *MenuItemController) CreateMenuItem(ctx *gin.Context) {
 
 	err = c.menuItemService.CreateMenuItem(ctx.Request.Context(), userID.(string), &menuItem, *file)
 	if err != nil {
+		if err.Error() == "missing alcohol content or spice level" {
+			ctx.JSON(http.StatusBadRequest, gin.H{"error": "Please select alcohol content or spice level"})
+			return
+		}
+
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
