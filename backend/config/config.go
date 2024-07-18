@@ -11,7 +11,7 @@ import (
 
 type Config struct {
 	MONGO_URI             string
-	JWT_SECRET            string
+	JWT_KEY               string
 	GOOGLE_RANDOM_STATE   string
 	GoogleLoginConfig     oauth2.Config
 	AWS_ACCESS_KEY        string
@@ -36,7 +36,7 @@ func LoadConfig() {
 
 	AppConfig = Config{
 		MONGO_URI:           viper.GetString("MONGO_URI"),
-		JWT_SECRET:          viper.GetString("JWT_SECRET"),
+		JWT_KEY:             viper.GetString("JWT_KEY"),
 		GOOGLE_RANDOM_STATE: viper.GetString("GOOGLE_RANDOM_STATE"),
 		GoogleLoginConfig: oauth2.Config{
 			ClientID:     viper.GetString("GOOGLE_CLIENT_ID"),
@@ -56,8 +56,8 @@ func LoadConfig() {
 	if AppConfig.MONGO_URI == "" {
 		log.Fatal("MONGO_URI is required")
 	}
-	if AppConfig.JWT_SECRET == "" {
-		log.Fatal("JWT_SECRET is required")
+	if AppConfig.JWT_KEY == "" {
+		log.Fatal("JWT_KEY is required")
 	}
 	if AppConfig.GOOGLE_RANDOM_STATE == "" {
 		log.Fatal("GOOGLE_RANDOM_STATE is required")

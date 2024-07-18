@@ -8,7 +8,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-var jwtKey = []byte(config.AppConfig.JWT_SECRET)
+var jwtKey = []byte(config.AppConfig.JWT_KEY)
 
 type CustomClaims struct {
 	UserID string `json:"userId"`
