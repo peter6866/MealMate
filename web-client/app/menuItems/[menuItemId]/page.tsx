@@ -26,7 +26,7 @@ interface User {
 export async function generateMetadata({ params }: { params: any }) {
   try {
     const cookieStore = cookies();
-    const token = cookieStore.get('token')!.value;
+    const token = cookieStore.get('token')?.value;
     const response = await axios.get(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/menuItems/${params.menuItemId}`,
       {
@@ -53,7 +53,7 @@ export async function generateMetadata({ params }: { params: any }) {
 export default async function MenuItem({ params }: { params: any }) {
   try {
     const cookieStore = cookies();
-    const token = cookieStore.get('token')!.value;
+    const token = cookieStore.get('token')?.value;
 
     const [userResponse, menuItemResponse] = await Promise.all([
       await axios.get(

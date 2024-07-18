@@ -20,7 +20,7 @@ interface searchParamsProps {
 
 async function fetchMenuItems() {
   const cookieStore = cookies();
-  const token = cookieStore.get('token')!.value;
+  const token = cookieStore.get('token')?.value;
 
   const response = await axios.get(
     `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/menuItems`,
