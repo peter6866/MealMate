@@ -2,6 +2,8 @@
 
 import { cookies } from 'next/headers';
 import axios from 'axios';
+import { revalidatePath } from 'next/cache';
+import { redirect } from 'next/navigation';
 
 export async function setChef(prevState: any, formData: any) {
   const email = formData.get('partner-email');
@@ -33,10 +35,7 @@ export async function setChef(prevState: any, formData: any) {
       }
     );
 
-    return {
-      success: true,
-      message: 'You have completed the setup!',
-    };
+    revalidatePath('/menuItems');
   } catch (error) {
     if (axios.isAxiosError(error)) {
       return {
@@ -50,4 +49,5 @@ export async function setChef(prevState: any, formData: any) {
       };
     }
   }
+  redirect('/menuItems');
 }

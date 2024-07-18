@@ -8,29 +8,13 @@ import { Button } from '@nextui-org/button';
 import { EnvelopeIcon } from '@heroicons/react/24/solid';
 import { setChef } from './SetChefAction';
 import { useFormState } from 'react-dom';
-import { useRouter } from 'next/navigation';
 import { ExclamationCircleIcon } from '@heroicons/react/24/outline';
 import { Card, CardBody } from '@nextui-org/card';
-import { CheckCircleIcon } from '@heroicons/react/24/outline';
 
 const initialState = {
   success: false,
   message: '',
 };
-
-function SuccessButton() {
-  const router = useRouter();
-
-  return (
-    <Button
-      size="lg"
-      className="w-full bg-mainLight dark:bg-mainDark text-white font-medium text-lg"
-      onPress={() => router.push('/menuItems')}
-    >
-      Get Started
-    </Button>
-  );
-}
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -68,7 +52,6 @@ export default function SetChefForm() {
           className="scale-75"
           isSelected={isChef}
           onValueChange={setIsChef}
-          isDisabled={state?.success}
         />
       </div>
       <input type="hidden" name="is-chef" value={isChef ? 'true' : 'false'} />
@@ -88,7 +71,6 @@ export default function SetChefForm() {
             <span className="text-default-400 text-sm">@gmail.com</span>
           </div>
         }
-        isDisabled={state?.success}
       />
       {state?.message && !state?.success && (
         <Card className="bg-danger-50" shadow="none">
@@ -100,17 +82,7 @@ export default function SetChefForm() {
           </CardBody>
         </Card>
       )}
-      {state?.message && state?.success && (
-        <Card className="bg-success-50" shadow="none">
-          <CardBody className="p-3">
-            <div className="flex items-center space-x-2">
-              <CheckCircleIcon className="w-6 h-6 text-success-600" />
-              <p className="text-success-600">{state.message}</p>
-            </div>
-          </CardBody>
-        </Card>
-      )}
-      {state?.success ? <SuccessButton /> : <SubmitButton />}
+      <SubmitButton />
     </form>
   );
 }

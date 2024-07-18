@@ -50,9 +50,22 @@ export async function middleware(req: NextRequest) {
     return NextResponse.redirect(new URL('/menuItems', req.nextUrl));
   }
 
+  if (
+    req.nextUrl.pathname === '/login/setChefAndPartner' &&
+    data.partnerEmail
+  ) {
+    return NextResponse.redirect(new URL('/menuItems', req.nextUrl));
+  }
+
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ['/profile/:path*', '/menuItems/:path*', '/', '/cart/:path*'],
+  matcher: [
+    '/profile/:path*',
+    '/menuItems/:path*',
+    '/',
+    '/cart/:path*',
+    '/login/setChefAndPartner',
+  ],
 };
