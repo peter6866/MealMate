@@ -1,0 +1,33 @@
+name: Deploy Backend to HeroKu
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'backend/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: akhileshns/heroku-deploy@v3.13.15
+        with:
+          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+          heroku_app_name: "mealmate-jh"
+          heroku_email: "peter.huang440@gmail.com"
+          appdir: "backend"
+          env_file: ".env"
+        env:
+          HD_MONGO_URI: ${{ secrets.HD_MONGO_URI }}
+          HD_JWT_KEY: ${{ secrets.HD_JWT_KEY }}
+          HD_GOOGLE_RANDOM_STATE: ${{ secrets.HD_GOOGLE_RANDOM_STATE }}
+          HD_GOOGLE_CLIENT_ID: ${{ secrets.HD_GOOGLE_CLIENT_ID }}
+          HD_GOOGLE_CLIENT_SECRET: ${{ secrets.HD_GOOGLE_CLIENT_SECRET }}
+          HD_GOOGLE_REDIRECT_URL: ${{ secrets.HD_GOOGLE_REDIRECT_URL }}
+          HD_AWS_ACCESS_KEY: ${{ secrets.HD_AWS_ACCESS_KEY }}
+          HD_AWS_SECRET_ACCESS_KEY: ${{ secrets.HD_AWS_SECRET_ACCESS_KEY }}
+          HD_AWS_REGION: ${{ secrets.HD_AWS_REGION }}
+          HD_AWS_S3_BUCKET: ${{ secrets.HD_AWS_S3_BUCKET }}
+          HD_ALLOWED_ORIGIN: ${{ secrets.HD_ALLOWED_ORIGIN }}

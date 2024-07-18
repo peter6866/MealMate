@@ -17,6 +17,7 @@ type Config struct {
 	AWS_SECRET_ACCESS_KEY string
 	AWS_REGION            string
 	AWS_S3_BUCKET         string
+	ALLOWED_ORIGIN        string
 }
 
 var AppConfig Config
@@ -44,5 +45,6 @@ func LoadConfig() {
 		AWS_SECRET_ACCESS_KEY: viper.GetString("AWS_SECRET_ACCESS_KEY"),
 		AWS_REGION:            viper.GetString("AWS_REGION"),
 		AWS_S3_BUCKET:         viper.GetString("AWS_S3_BUCKET"),
+		ALLOWED_ORIGIN:        viper.GetString("ALLOWED_ORIGIN"),
 	}
 }

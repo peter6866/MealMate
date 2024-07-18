@@ -40,9 +40,6 @@ out/
 vendor/
 node_modules/
 
-# Go modules files
-go.sum
-
 # Directories and files created by build tools
 .coverage/
 .coverage.out

@@ -3,6 +3,7 @@ package routes
 import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"github.com/peter6866/foodie/config"
 	"github.com/peter6866/foodie/controllers"
 	"github.com/peter6866/foodie/middlewares"
 	"github.com/peter6866/foodie/repositories"
@@ -14,7 +15,7 @@ func SetupRouter(client *mongo.Client) *gin.Engine {
 	router := gin.Default()
 
 	config := cors.Config{
-		AllowOrigins:     []string{"http://localhost:3000"},
+		AllowOrigins:     []string{config.AppConfig.ALLOWED_ORIGIN},
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE"},
 		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
 		ExposeHeaders:    []string{"Content-Length"},
