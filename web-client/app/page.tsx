@@ -19,7 +19,7 @@ export default function LandingPage() {
         />
         <h1 className="font-bold mb-4 text-4xl text-white">Foodie</h1>
         <p className="mb-8 text-lg text-white">
-          Your Couple's Culinary Companion
+          Your Couple&#39;s Culinary Companion
         </p>
         <Card className="w-full max-w-md p-6 bg-white/90 backdrop-blur-sm justify-between items-center">
           <h2 className="mb-4 text-2xl font-semibold text-mainLight">
@@ -30,8 +30,8 @@ export default function LandingPage() {
           </p>
           <GoogleLogin />
           <p className="mt-6 text-gray-500 text-xs">
-            After logging in, you'll enter your partner's email and choose your
-            role as a chef or food enthusiast.
+            After logging in, you&#39;ll enter your partner&#39;s email and
+            choose your role as a chef or food enthusiast.
           </p>
         </Card>
       </div>
