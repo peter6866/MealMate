@@ -5,7 +5,7 @@ export const revalidate = 0;
 
 export default async function CartItemsCount() {
   const cookieStore = cookies();
-  const token = cookieStore.get('token')!.value;
+  const token = cookieStore.get('token')?.value;
 
   if (!token) {
     return 0;

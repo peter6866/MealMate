@@ -6,7 +6,7 @@ import { cookies } from 'next/headers';
 
 export async function addToCart(formData: FormData) {
   const cookieStore = cookies();
-  const token = cookieStore.get('token')!.value;
+  const token = cookieStore.get('token')?.value;
 
   try {
     await axios.post(

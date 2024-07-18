@@ -20,7 +20,7 @@ export async function setChef(prevState: any, formData: any) {
   };
 
   const cookieStore = cookies();
-  const token = cookieStore.get('token')!.value;
+  const token = cookieStore.get('token')?.value;
 
   try {
     await axios.post(

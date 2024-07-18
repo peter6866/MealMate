@@ -30,7 +30,7 @@ export async function createMenuItem(prevState: any, formData: FormData) {
   form.append('categoryId', formData.get('categoryId') as string);
 
   const cookieStore = cookies();
-  const token = cookieStore.get('token')!.value;
+  const token = cookieStore.get('token')?.value;
 
   try {
     await axios.post(
