@@ -71,6 +71,26 @@ func (r *UserRepository) Update(ctx context.Context, user *models.User) error {
 	return err
 }
 
+// Add a menu item to a user's cart
+func (r *UserRepository) AddToCart(ctx context.Context, userID, menuItemID primitive.ObjectID) error {
+	_, err := r.collection.UpdateOne(
+		ctx,
+		bson.M{"_id": userID},
+		bson.M{"$push": bson.M{"cart": menuItemID}},
+	)
+	return err
+}
+
+// delete a menu item from a user's cart
+func (r *UserRepository) RemoveFromCart(ctx context.Context, userID, menuItemID primitive.ObjectID) error {
+	_, err := r.collection.UpdateOne(
+		ctx,
+		bson.M{"_id": userID},
+		bson.M{"$pull": bson.M{"cart": menuItemID}},
+	)
+	return err
+}
+
 // Add an order to a user's history
 func (r *UserRepository) AddOrder(userID, orderID primitive.ObjectID) error {
 	_, err := r.collection.UpdateOne(

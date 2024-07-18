@@ -4,6 +4,8 @@ import { Metadata, Viewport } from 'next';
 import { siteConfig } from '@/config/site';
 import { Navbar } from '@/components/navbar';
 import { Providers } from './providers';
+import { Suspense } from 'react';
+import CartItemsCount from '@/components/Cart/CartItemsCount';
 
 export const metadata: Metadata = {
   title: {
@@ -34,9 +36,16 @@ export default function RootLayout({
       <body>
         <Providers>
           <main className="container mx-auto max-w-7xl pb-16">{children}</main>
-          <Navbar />
+          <Suspense fallback={<Navbar cartItemsCount={0} />}>
+            <CartItemsCountWrapper />
+          </Suspense>
         </Providers>
       </body>
     </html>
   );
+}
+
+async function CartItemsCountWrapper() {
+  const count = await CartItemsCount();
+  return <Navbar cartItemsCount={count} />;
 }

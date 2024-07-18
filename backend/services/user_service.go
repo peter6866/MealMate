@@ -11,11 +11,12 @@ import (
 )
 
 type UserService struct {
-	repo *repositories.UserRepository
+	repo         *repositories.UserRepository
+	menuItemRepo *repositories.MenuItemRepository
 }
 
-func NewUserService(repo *repositories.UserRepository) *UserService {
-	return &UserService{repo: repo}
+func NewUserService(repo *repositories.UserRepository, menuItemRepo *repositories.MenuItemRepository) *UserService {
+	return &UserService{repo: repo, menuItemRepo: menuItemRepo}
 }
 
 // Find or create user
@@ -98,6 +99,61 @@ func (s *UserService) SetChefAndPartner(ctx context.Context, userID string, isCh
 
 func (s *UserService) UpdateUser(ctx context.Context, user *models.User) error {
 	return s.repo.Update(ctx, user)
+}
+
+func (s *UserService) AddToCart(ctx context.Context, userID, menuItemID string) error {
+	userObjectId, err := primitive.ObjectIDFromHex(userID)
+	if err != nil {
+		return err
+	}
+
+	menuItemObjectId, err := primitive.ObjectIDFromHex(menuItemID)
+	if err != nil {
+		return err
+	}
+	return s.repo.AddToCart(ctx, userObjectId, menuItemObjectId)
+}
+
+func (s *UserService) RemoveFromCart(ctx context.Context, userID, menuItemID string) error {
+	userObjectId, err := primitive.ObjectIDFromHex(userID)
+	if err != nil {
+		return err
+	}
+
+	menuItemObjectId, err := primitive.ObjectIDFromHex(menuItemID)
+	if err != nil {
+		return err
+	}
+	return s.repo.RemoveFromCart(ctx, userObjectId, menuItemObjectId)
+}
+
+func (s *UserService) GetCartItems(ctx context.Context, userID string) ([]*models.MenuItem, error) {
+	user, err := s.GetUser(ctx, userID)
+	if err != nil {
+		return nil, err
+	}
+
+	var createdUserID primitive.ObjectID
+	if user.IsChef {
+		createdUserID = user.ID
+	} else {
+		createdUser, err := s.repo.FindByEmail(ctx, user.PartnerEmail)
+		if err != nil {
+			return nil, err
+		}
+		createdUserID = createdUser.ID
+	}
+
+	var menuItems []*models.MenuItem
+	for _, menuItemID := range user.Cart {
+		menuItem, err := s.menuItemRepo.GetByID(ctx, menuItemID, createdUserID)
+		if err != nil {
+			return nil, err
+		}
+		menuItems = append(menuItems, menuItem)
+	}
+
+	return menuItems, nil
 }
 
 func (s *UserService) AddOrderToUser(userID, orderID primitive.ObjectID) error {

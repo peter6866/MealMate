@@ -13,7 +13,8 @@ func ChefMiddleware() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		client := config.MongoClient
 		userRepo := repositories.NewUserRepository(client)
-		userService := services.NewUserService(userRepo)
+		menuItemRepo := repositories.NewMenuItemRepository(client)
+		userService := services.NewUserService(userRepo, menuItemRepo)
 		userId, _ := ctx.Get("userID")
 
 		user, err := userService.GetUser(ctx.Request.Context(), userId.(string))

@@ -11,8 +11,10 @@
   "dependencies": {
     "@heroicons/react": "^2.1.5",
     "@nextui-org/avatar": "0.0.0-canary-20240616172522",
+    "@nextui-org/badge": "^2.0.30",
     "@nextui-org/button": "2.0.34",
     "@nextui-org/card": "^2.0.31",
+    "@nextui-org/chip": "^2.0.30",
     "@nextui-org/code": "2.0.29",
     "@nextui-org/divider": "^2.0.28",
     "@nextui-org/input": "2.2.2",

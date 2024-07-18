@@ -19,6 +19,7 @@ type User struct {
 	Picture      string               `bson:"picture,omitempty" json:"picture,omitempty"`
 	IsChef       bool                 `bson:"isChef,omitempty" json:"isChef,omitempty"`
 	PartnerEmail string               `bson:"partnerEmail,omitempty" json:"partnerEmail,omitempty"`
+	Cart         []primitive.ObjectID `bson:"cart" json:"cart"`
 }
 
 const (
@@ -39,29 +40,13 @@ func NewUser(name, email, googleId, role, picture string) *User {
 		UpdatedAt:    now,
 		LastLoginAt:  now,
 		Picture:      picture,
+		Cart:         []primitive.ObjectID{},
 	}
 }
 
 // UpdateLastLogin updates the last login time of the user
 func (u *User) UpdateLastLogin() {
 	u.LastLoginAt = time.Now()
-}
-
-// AddOrder adds an order to the user's order history
-func (u *User) AddOrder(orderID primitive.ObjectID) {
-	u.OrderHistory = append(u.OrderHistory, orderID)
-	u.UpdatedAt = time.Now()
-}
-
-// RemoveOrder removes an order from the user's order history
-func (u *User) RemoveOrder(orderID primitive.ObjectID) {
-	for i, id := range u.OrderHistory {
-		if id == orderID {
-			u.OrderHistory = append(u.OrderHistory[:i], u.OrderHistory[i+1:]...)
-			break
-		}
-	}
-	u.UpdatedAt = time.Now()
 }
 
 // IsAdmin checks if the user is an admin

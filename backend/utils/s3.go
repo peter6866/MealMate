@@ -3,8 +3,6 @@ package utils
 import (
 	"bytes"
 	"fmt"
-	"image"
-	"image/jpeg"
 	"mime/multipart"
 	"net/url"
 	"strings"
@@ -34,7 +32,7 @@ func UploadFileToS3(file *multipart.FileHeader) (string, error) {
 	defer src.Close()
 
 	// Decode the image
-	img, _, err := image.Decode(src)
+	img, err := imaging.Decode(src, imaging.AutoOrientation(true))
 	if err != nil {
 		return "", err
 	}
@@ -46,7 +44,7 @@ func UploadFileToS3(file *multipart.FileHeader) (string, error) {
 
 	// create a buffer to store the resized image
 	buf := new(bytes.Buffer)
-	err = jpeg.Encode(buf, resizedImg, &jpeg.Options{Quality: 70})
+	err = imaging.Encode(buf, resizedImg, imaging.JPEG, imaging.JPEGQuality(70))
 	if err != nil {
 		return "", err
 	}

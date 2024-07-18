@@ -12,6 +12,8 @@ import { CalendarDaysIcon as CalendarSolid } from '@heroicons/react/24/solid';
 import { ShoppingCartIcon as ShoppingCartSolid } from '@heroicons/react/24/solid';
 import { ClipboardDocumentListIcon as ClipboardSolid } from '@heroicons/react/24/solid';
 
+import { Badge } from '@nextui-org/badge';
+
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
@@ -20,6 +22,7 @@ interface NavItemProps {
   icon: any;
   solidIcon: any;
   label: string;
+  count?: number;
 }
 
 const NavItem: React.FC<NavItemProps> = ({
@@ -27,6 +30,7 @@ const NavItem: React.FC<NavItemProps> = ({
   icon: Icon,
   solidIcon: SolidIcon,
   label,
+  count,
 }) => {
   const pathname = usePathname();
   const isActive = pathname === href;
@@ -37,9 +41,23 @@ const NavItem: React.FC<NavItemProps> = ({
       className="inline-flex flex-col items-center justify-center px-5"
     >
       {isActive ? (
-        <SolidIcon className="h-6 w-6 text-mainLight" />
+        <Badge
+          color="danger"
+          content={count}
+          shape="circle"
+          isInvisible={count === undefined || count === 0}
+        >
+          <SolidIcon className="h-6 w-6 text-mainLight" />
+        </Badge>
       ) : (
-        <Icon className="h-6 w-6 text-default-600" />
+        <Badge
+          color="danger"
+          content={count}
+          shape="circle"
+          isInvisible={count === undefined || count === 0}
+        >
+          <Icon className="h-6 w-6 text-default-600" />
+        </Badge>
       )}
       <span
         className={`text-sm ${isActive ? 'text-mainLight' : 'text-default-600'}`}
@@ -50,7 +68,7 @@ const NavItem: React.FC<NavItemProps> = ({
   );
 };
 
-export const Navbar = () => {
+export const Navbar = ({ cartItemsCount }: { cartItemsCount: number }) => {
   return (
     <div className="fixed bottom-0 left-0 z-50 w-full h-16 border-t border-gray-200 bg-white dark:bg-default-100 dark:border-0">
       <div className="grid h-full max-w-lg grid-cols-5 mx-auto font-medium">
@@ -77,6 +95,7 @@ export const Navbar = () => {
           icon={ShoppingCartIcon}
           solidIcon={ShoppingCartSolid}
           label="Cart"
+          count={cartItemsCount}
         />
         <NavItem
           href="/profile"
