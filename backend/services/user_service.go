@@ -133,6 +133,11 @@ func (s *UserService) GetCartItems(ctx context.Context, userID string) ([]*model
 		return nil, err
 	}
 
+	// return empty array if the user just registered
+	if len(user.Cart) == 0 {
+		return []*models.MenuItem{}, nil
+	}
+
 	var createdUserID primitive.ObjectID
 	if user.IsChef {
 		createdUserID = user.ID
