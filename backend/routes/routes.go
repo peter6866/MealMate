@@ -14,6 +14,7 @@ import (
 func SetupRouter(client *mongo.Client) *gin.Engine {
 	router := gin.Default()
 
+	// config cors
 	config := cors.Config{
 		AllowOrigins:     []string{config.AppConfig.ALLOWED_ORIGIN},
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE"},
