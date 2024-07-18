@@ -86,4 +86,5 @@ func LoadConfig() {
 	if AppConfig.ALLOWED_ORIGIN == "" {
 		log.Fatal("ALLOWED_ORIGIN is required")
 	}
+
 }
