@@ -29,7 +29,7 @@ func LoadConfig() {
 
 	err := viper.ReadInConfig()
 	if err != nil {
-		fmt.Println("Error reading config file, falling back to environment variables")
+		fmt.Println("Cannot find config file, falling back to environment variables")
 	}
 
 	viper.AutomaticEnv()
