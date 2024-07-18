@@ -18,7 +18,6 @@ jobs:
           heroku_app_name: "mealmate-jh"
           heroku_email: "peter.huang440@gmail.com"
           appdir: "backend"
-          env_file: ".env"
         env:
           HD_MONGO_URI: ${{ secrets.HD_MONGO_URI }}
           HD_JWT_KEY: ${{ secrets.HD_JWT_KEY }}
