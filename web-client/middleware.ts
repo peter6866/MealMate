@@ -40,7 +40,11 @@ export async function middleware(req: NextRequest) {
     return NextResponse.redirect(new URL('/login', req.nextUrl));
   }
 
-  if (req.nextUrl.pathname !== '/profile' && !data.partnerEmail) {
+  if (
+    req.nextUrl.pathname !== '/profile' &&
+    req.nextUrl.pathname !== '/login/setChefAndPartner' &&
+    !data.partnerEmail
+  ) {
     return NextResponse.redirect(
       new URL('/login/setChefAndPartner', req.nextUrl)
     );
