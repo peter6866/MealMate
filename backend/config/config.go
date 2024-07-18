@@ -1,6 +1,7 @@
 package config
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/spf13/viper"
@@ -26,9 +27,12 @@ func LoadConfig() {
 	viper.SetConfigFile(".env")
 	viper.SetConfigType("env")
 
-	if err := viper.ReadInConfig(); err != nil {
-		log.Fatalf("Error reading config file, %s", err)
+	err := viper.ReadInConfig()
+	if err != nil {
+		fmt.Println("Error reading config file, falling back to environment variables")
 	}
+
+	viper.AutomaticEnv()
 
 	AppConfig = Config{
 		MONGO_URI:           viper.GetString("MONGO_URI"),
@@ -46,5 +50,40 @@ func LoadConfig() {
 		AWS_REGION:            viper.GetString("AWS_REGION"),
 		AWS_S3_BUCKET:         viper.GetString("AWS_S3_BUCKET"),
 		ALLOWED_ORIGIN:        viper.GetString("ALLOWED_ORIGIN"),
+	}
+
+	// validate config
+	if AppConfig.MONGO_URI == "" {
+		log.Fatal("MONGO_URI is required")
+	}
+	if AppConfig.JWT_SECRET == "" {
+		log.Fatal("JWT_SECRET is required")
+	}
+	if AppConfig.GOOGLE_RANDOM_STATE == "" {
+		log.Fatal("GOOGLE_RANDOM_STATE is required")
+	}
+	if AppConfig.GoogleLoginConfig.ClientID == "" {
+		log.Fatal("GOOGLE_CLIENT_ID is required")
+	}
+	if AppConfig.GoogleLoginConfig.ClientSecret == "" {
+		log.Fatal("GOOGLE_CLIENT_SECRET is required")
+	}
+	if AppConfig.GoogleLoginConfig.RedirectURL == "" {
+		log.Fatal("GOOGLE_REDIRECT_URL is required")
+	}
+	if AppConfig.AWS_ACCESS_KEY == "" {
+		log.Fatal("AWS_ACCESS_KEY is required")
+	}
+	if AppConfig.AWS_SECRET_ACCESS_KEY == "" {
+		log.Fatal("AWS_SECRET_ACCESS_KEY is required")
+	}
+	if AppConfig.AWS_REGION == "" {
+		log.Fatal("AWS_REGION is required")
+	}
+	if AppConfig.AWS_S3_BUCKET == "" {
+		log.Fatal("AWS_S3_BUCKET is required")
+	}
+	if AppConfig.ALLOWED_ORIGIN == "" {
+		log.Fatal("ALLOWED_ORIGIN is required")
 	}
 }
