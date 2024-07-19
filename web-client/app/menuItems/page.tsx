@@ -53,7 +53,7 @@ export default async function HomePage({
             isIconOnly
             color="primary"
             aria-label="Create"
-            className="fixed bottom-24 right-10 z-50 shadow-lg rounded-full w-12 h-12 bg-mainLight dark:bg-mainDark"
+            className="fixed bottom-[6.5rem] right-10 z-50 shadow-lg rounded-full w-12 h-12 bg-mainLight dark:bg-mainDark"
           >
             <PlusIcon className="h-8 w-8" />
           </Button>

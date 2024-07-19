@@ -1,8 +1,9 @@
 import Image from 'next/image';
 import { Card } from '@nextui-org/card';
+import RemoveFromCart from './RemoveFromCartForm';
 
 interface MenuItem {
-  id: number;
+  id: string;
   name: string;
   imageUrl: string;
 }
@@ -26,7 +27,7 @@ export default function CartList({ cartItems }: { cartItems: MenuItem[] }) {
             </div>
           </div>
           <div>
-            <button className="text-red-500">Remove</button>
+            <RemoveFromCart menuItemId={item.id} />
           </div>
         </div>
       ))}

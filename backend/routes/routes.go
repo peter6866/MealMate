@@ -54,7 +54,7 @@ func SetupRouter(client *mongo.Client) *gin.Engine {
 
 		authenticatedRoutes.POST("/cart", authController.AddToCart)
 		authenticatedRoutes.GET("/cart", authController.GetCartItems)
-		authenticatedRoutes.DELETE("/cart", authController.RemoveFromCart)
+		authenticatedRoutes.DELETE("/cart/:id", authController.RemoveFromCart)
 
 		menuItemRoutes := authenticatedRoutes.Group("/menuItems")
 		{

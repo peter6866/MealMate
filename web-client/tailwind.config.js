@@ -12,6 +12,7 @@ module.exports = {
       fontFamily: {
         sans: ['var(--font-sans)'],
         mono: ['var(--font-geist-mono)'],
+        serif: ['var(--font-serif)'],
       },
       colors: {
         mainLight: '#60BEEB',

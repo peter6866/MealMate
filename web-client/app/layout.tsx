@@ -6,6 +6,7 @@ import { Navbar } from '@/components/navbar';
 import { Providers } from './providers';
 import { Suspense } from 'react';
 import CartItemsCount from '@/components/Cart/CartItemsCount';
+import '@/styles/globals.css';
 
 export const metadata: Metadata = {
   title: {

@@ -73,7 +73,19 @@ func (r *UserRepository) Update(ctx context.Context, user *models.User) error {
 
 // Add a menu item to a user's cart
 func (r *UserRepository) AddToCart(ctx context.Context, userID, menuItemID primitive.ObjectID) error {
-	_, err := r.collection.UpdateOne(
+	// Check if the item is already in the cart
+	var user models.User
+	err := r.collection.FindOne(ctx, bson.M{"_id": userID}).Decode(&user)
+	if err != nil {
+		return err
+	}
+	for _, item := range user.Cart {
+		if item == menuItemID {
+			return nil
+		}
+	}
+
+	_, err = r.collection.UpdateOne(
 		ctx,
 		bson.M{"_id": userID},
 		bson.M{"$push": bson.M{"cart": menuItemID}},
@@ -83,11 +95,13 @@ func (r *UserRepository) AddToCart(ctx context.Context, userID, menuItemID primi
 
 // delete a menu item from a user's cart
 func (r *UserRepository) RemoveFromCart(ctx context.Context, userID, menuItemID primitive.ObjectID) error {
+
 	_, err := r.collection.UpdateOne(
 		ctx,
 		bson.M{"_id": userID},
 		bson.M{"$pull": bson.M{"cart": menuItemID}},
 	)
+
 	return err
 }
 

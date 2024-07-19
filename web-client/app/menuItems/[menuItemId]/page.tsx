@@ -21,6 +21,7 @@ interface Dish {
 
 interface User {
   isChef: boolean;
+  cart: string[];
 }
 
 export async function generateMetadata({ params }: { params: any }) {
@@ -77,6 +78,9 @@ export default async function MenuItem({ params }: { params: any }) {
     const menuItem: Dish = menuItemResponse.data;
     const user: User = userResponse.data;
 
+    const carts = user.cart;
+    const isInCart = carts.includes(params.menuItemId);
+
     const spiceMap: { [key: string]: string }[] = [
       { Spicy: 'Spicy' },
       { Mild: 'Mild' },
@@ -114,11 +118,9 @@ export default async function MenuItem({ params }: { params: any }) {
             </div>
           </Link>
         </div>
-        <div className="flex-1 p-6 flex flex-col justify-between">
-          <div className="flex justify-between">
-            <span className="text-3xl font-bold text-default-800 mb-2">
-              {name}
-            </span>
+        <div className="flex-1 px-6 py-4 flex flex-col justify-between">
+          <div className="flex justify-between items-center">
+            <span className="text-2xl font-bold text-default-800">{name}</span>
             {user.isChef && (
               <DeleteMenuItemForm menuItemId={params.menuItemId} />
             )}
@@ -147,7 +149,19 @@ export default async function MenuItem({ params }: { params: any }) {
             </a>
           )}
           <div className="mt-auto">
-            <ItemAddToCartForm menuItemId={params.menuItemId} />
+            {isInCart ? (
+              <Button
+                color="primary"
+                size="lg"
+                fullWidth
+                className="text-lg py-3 bg-mainLight dark:bg-mainDark"
+                isDisabled
+              >
+                Added to Cart
+              </Button>
+            ) : (
+              <ItemAddToCartForm menuItemId={params.menuItemId} />
+            )}
           </div>
         </div>
       </div>

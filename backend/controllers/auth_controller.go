@@ -150,19 +150,11 @@ func (c *AuthController) AddToCart(context *gin.Context) {
 }
 
 func (c *AuthController) RemoveFromCart(context *gin.Context) {
-	var requestBody struct {
-		MenuItemID string `json:"menuItemID"`
-	}
-
-	if err := context.BindJSON(&requestBody); err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request body"})
-		return
-	}
-
+	id := context.Param("id")
 	ctx := context.Request.Context()
 
 	userID, _ := context.Get("userID")
-	err := c.userService.RemoveFromCart(ctx, userID.(string), requestBody.MenuItemID)
+	err := c.userService.RemoveFromCart(ctx, userID.(string), id)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to remove from cart"})
 		return
