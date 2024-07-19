@@ -24,8 +24,9 @@ export async function GET(request: NextRequest) {
 
     cookies().set('token', token, {
       httpOnly: true,
-      secure: false,
+      secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
+      maxAge: 60 * 60 * 24 * 14,
     });
 
     const redirectUrl = new URL('/menuItems', request.url);
