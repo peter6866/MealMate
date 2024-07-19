@@ -16,6 +16,7 @@ interface searchParamsProps {
   category?: string;
   spiceLevel?: string;
   alcoholContent?: string;
+  query?: string;
 }
 
 async function fetchMenuItems() {
@@ -45,15 +46,17 @@ export default async function MenuItemList({
     return null;
   }
 
-  const { category, spiceLevel, alcoholContent } = filter;
+  const { category, spiceLevel, alcoholContent, query } = filter;
 
   const filteredDishes = dishes.filter((dish: Dish) => {
     const categoryMatch = !category || dish.categoryName === category;
     const spiceLevelMatch = !spiceLevel || dish.spiceLevel === spiceLevel;
     const alcoholContentMatch =
       !alcoholContent || dish.alcoholContent === alcoholContent;
+    const nameMatch =
+      !query || dish.name.toLowerCase().includes(query.toLowerCase());
 
-    return categoryMatch && spiceLevelMatch && alcoholContentMatch;
+    return categoryMatch && spiceLevelMatch && alcoholContentMatch && nameMatch;
   });
 
   return (

@@ -7,11 +7,13 @@ import { Button } from '@nextui-org/button';
 import Link from 'next/link';
 import { cookies } from 'next/headers';
 import axios from 'axios';
+import Search from '@/components/Search';
 
 interface searchParamsProps {
   category: string;
   spiceLevel: string;
   alcoholContent: string;
+  query: string;
 }
 
 interface User {
@@ -37,12 +39,15 @@ export default async function HomePage({
   const user = response.data as User;
 
   return (
-    <div className="min-h-screen bg-content1 p-4 relative">
-      <Filter />
+    <div className="min-h-screen bg-content2 dark:bg-content1 p-4 relative">
+      <div className="flex justify-between items-center gap-4 mb-4">
+        <Search />
+        <Filter />
+      </div>
 
       <Suspense
         fallback={<HomeSkeleton />}
-        key={`${searchParams.category}${searchParams.alcoholContent}${searchParams.spiceLevel}`}
+        key={`${searchParams.category}${searchParams.alcoholContent}${searchParams.spiceLevel}${searchParams.query}`}
       >
         <MenuItemList filter={searchParams} />
       </Suspense>
