@@ -10,9 +10,8 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['var(--font-sans)'],
+        sans: ['var(--font-opensans)'],
         mono: ['var(--font-geist-mono)'],
-        serif: ['var(--font-serif)'],
       },
       colors: {
         mainLight: '#60BEEB',

@@ -6,7 +6,13 @@ import { Navbar } from '@/components/navbar';
 import { Providers } from './providers';
 import { Suspense } from 'react';
 import CartItemsCount from '@/components/Cart/CartItemsCount';
-import '@/styles/globals.css';
+import { Open_Sans } from 'next/font/google';
+
+const openSans = Open_Sans({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-opensans',
+});
 
 export const metadata: Metadata = {
   title: {
@@ -32,9 +38,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html suppressHydrationWarning lang="en">
+    <html suppressHydrationWarning lang="en" className={`${openSans.variable}`}>
       <head />
-      <body>
+      <body className="font-sans">
         <Providers>
           <main className="container mx-auto max-w-7xl pb-16">{children}</main>
           <Suspense fallback={<Navbar cartItemsCount={0} />}>

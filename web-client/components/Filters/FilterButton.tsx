@@ -90,7 +90,7 @@ export default function FilterButton({
         <ModalContent>
           {(onClose) => (
             <>
-              <ModalHeader className="text-xl">Filters</ModalHeader>
+              <ModalHeader className="text-xl pt-6">Filters</ModalHeader>
               <ModalBody className="pt-0">
                 <p className="text-md">Categories</p>
                 <div className="mb-2 flex flex-wrap gap-2">

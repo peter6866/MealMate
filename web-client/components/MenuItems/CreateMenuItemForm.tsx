@@ -66,7 +66,7 @@ export default function CreateMenuItemForm({
 
   return (
     <Card className="w-full shadow-md">
-      <CardHeader className="flex flex-col items-start px-6 pt-8">
+      <CardHeader className="flex flex-col items-start px-6 pt-6">
         <p className="text-2xl font-bold text-mainLight dark:text-default-700">
           Add your Dish or Drink
         </p>
@@ -81,7 +81,7 @@ export default function CreateMenuItemForm({
             required
             fullWidth
             size="lg"
-            className="mb-4"
+            className="mb-2"
             variant="underlined"
             value={initialState.name}
             onChange={(e) =>
@@ -100,7 +100,7 @@ export default function CreateMenuItemForm({
             onChange={(e) => {
               setInitialState({ ...initialState, categoryId: e.target.value });
             }}
-            className="mb-4"
+            className="mb-2"
           >
             {categories.map((cat) => (
               <SelectItem key={cat.id} value={cat.id}>
@@ -116,7 +116,7 @@ export default function CreateMenuItemForm({
               variant="underlined"
               fullWidth
               size="lg"
-              className="mb-4"
+              className="mb-2"
               selectedKeys={[initialState.alcoholContent]}
               onChange={(e) =>
                 setInitialState({
@@ -138,7 +138,7 @@ export default function CreateMenuItemForm({
               fullWidth
               size="lg"
               variant="underlined"
-              className="mb-4"
+              className="mb-2"
               selectedKeys={[initialState.spiceLevel]}
               onChange={(e) =>
                 setInitialState({ ...initialState, spiceLevel: e.target.value })
