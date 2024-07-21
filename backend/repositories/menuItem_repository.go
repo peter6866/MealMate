@@ -48,10 +48,10 @@ func (r *MenuItemRepository) GetAll(ctx context.Context, userID primitive.Object
 	if err != nil {
 		return nil, err
 	}
-	defer cursor.Close(context.Background())
+	defer cursor.Close(ctx)
 
 	var items []*models.MenuItem
-	if err := cursor.All(context.Background(), &items); err != nil {
+	if err := cursor.All(ctx, &items); err != nil {
 		return nil, err
 	}
 	return items, nil

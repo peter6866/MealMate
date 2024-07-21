@@ -29,11 +29,13 @@ func SetupRouter(client *mongo.Client) *gin.Engine {
 	userRepo := repositories.NewUserRepository(client)
 	categoryRepo := repositories.NewCategoryRepository(client)
 	menuItemRepo := repositories.NewMenuItemRepository(client)
+	orderRepo := repositories.NewOrderRepository(client)
 
 	// All Services
 	userService := services.NewUserService(userRepo, menuItemRepo)
 	categoryService := services.NewCategoryService(categoryRepo)
 	menuItemService := services.NewMenuItemService(menuItemRepo, categoryRepo, userRepo)
+	orderService := services.NewOrderService(userRepo, orderRepo)
 
 	authController := controllers.NewAuthController(userService)
 
@@ -42,6 +44,7 @@ func SetupRouter(client *mongo.Client) *gin.Engine {
 
 	categoryController := controllers.NewCategoryController(categoryService)
 	menuItemController := controllers.NewMenuItemController(menuItemService)
+	orderController := controllers.NewOrderController(orderService)
 
 	router.GET("/api/categories", categoryController.GetAllCategories)
 
@@ -69,6 +72,12 @@ func SetupRouter(client *mongo.Client) *gin.Engine {
 		categoryRoutes := authenticatedRoutes.Group("/categories")
 		{
 			categoryRoutes.POST("", middlewares.ChefMiddleware(), categoryController.CreateCategory)
+		}
+
+		orderRoutes := authenticatedRoutes.Group("/orders")
+		{
+			orderRoutes.POST("", orderController.CreateOrder)
+			orderRoutes.GET("", orderController.GetAllOrders)
 		}
 	}
 
