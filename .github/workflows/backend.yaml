@@ -30,3 +30,4 @@ jobs:
           HD_AWS_REGION: ${{ secrets.HD_AWS_REGION }}
           HD_AWS_S3_BUCKET: ${{ secrets.HD_AWS_S3_BUCKET }}
           HD_ALLOWED_ORIGIN: ${{ secrets.HD_ALLOWED_ORIGIN }}
+          HD_SENDGRID_API_KEY: ${{ secrets.HD_SENDGRID_API_KEY }}

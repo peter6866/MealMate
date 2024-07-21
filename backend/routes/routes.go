@@ -24,6 +24,7 @@ func SetupRouter(client *mongo.Client) *gin.Engine {
 	}
 
 	router.Use(cors.New(config))
+	// Register custom error handler middleware
 	router.Use(middlewares.ErrorHandler())
 
 	// All Repositories
