@@ -28,6 +28,16 @@ func (r *OrderRepository) Create(ctx context.Context, order *models.Order) error
 	return err
 }
 
+// get order by ID
+func (r *OrderRepository) FindByID(ctx context.Context, id primitive.ObjectID) (*models.Order, error) {
+	var order models.Order
+	err := r.collection.FindOne(ctx, bson.M{"_id": id}).Decode(&order)
+	if err != nil {
+		return nil, err
+	}
+	return &order, nil
+}
+
 // get all orders with createdBy for non-chef user
 func (r *OrderRepository) GetAllForUser(ctx context.Context, createdBy primitive.ObjectID) ([]*models.Order, error) {
 	cursor, err := r.collection.Find(ctx, bson.M{"createdBy": createdBy})
@@ -56,4 +66,10 @@ func (r *OrderRepository) GetAllForChef(ctx context.Context, sendTo primitive.Ob
 		return nil, err
 	}
 	return orders, nil
+}
+
+// Complete an order sendTo the userID of the chef
+func (r *OrderRepository) CompleteOrder(ctx context.Context, orderID primitive.ObjectID, userID primitive.ObjectID) error {
+	_, err := r.collection.UpdateOne(ctx, bson.M{"_id": orderID, "sendTo": userID}, bson.M{"$set": bson.M{"status": models.OrderStatusCompleted}})
+	return err
 }

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MealMate - New Order Received</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .header {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            color: #60BEEB;
+            margin-bottom: 5px;
+        }
+        .header-title {
+            font-size: 18px;
+            color: #333;
+        }
+        .content {
+            padding: 20px;
+        }
+        h2 {
+            color: #60BEEB;
+            border-bottom: 2px solid #60BEEB;
+            padding-bottom: 10px;
+            margin-top: 30px;
+        }
+        .item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+        }
+        .item:not(:last-child) {
+            border-bottom: 1px solid #eee;
+        }
+        .item img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 5px;
+            margin-right: 15px;
+        }
+        .item-details {
+            flex-grow: 1;
+        }
+        .item-name {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        .footer {
+            background-color: #f8f8f8;
+            text-align: center;
+            padding: 15px;
+            font-size: 0.9em;
+            color: #666;
+        }
+        @media only screen and (max-width: 600px) {
+            body {
+                background-color: #ffffff;
+            }
+            .container {
+                width: calc(100% - 16px);
+                margin: 0 auto;
+                border-radius: 0;
+                box-shadow: none;
+                border: 8px solid #c4eafc;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">MealMate</div>
+            <div class="header-title">New Order Received</div>
+        </div>
+        <div class="content">
+            <p>Dear Chef,</p>
+            <p>You have received a new order from <strong>{{.CustomerName}}</strong>. Please start preparing the following items:</p>
+            
+            <h2>Order Items:</h2>
+            {{range .Items}}
+            <div class="item" key="{{.ID}}">
+                <img src="{{.ImageUrl}}" alt="{{.Name}}">
+                <div class="item-details">
+                    <div class="item-name">{{.Name}}</div>
+                </div>
+            </div>
+            {{end}}
+            
+            <p><strong>Order Time:</strong> {{.OrderTime}}</p>
+            
+            <p>Please prepare these items at your earliest convenience. The customer is eagerly waiting for your delicious creations!</p>
+        </div>
+        <div class="footer">
+            <p>Thank you for using MealMate to connect with your customers.</p>
+        </div>
+    </div>
+</body>
+</html>

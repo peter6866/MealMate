@@ -19,6 +19,7 @@ type Config struct {
 	AWS_REGION            string
 	AWS_S3_BUCKET         string
 	ALLOWED_ORIGIN        string
+	SENDGRID_API_KEY      string
 }
 
 var AppConfig Config
@@ -50,6 +51,7 @@ func LoadConfig() {
 		AWS_REGION:            viper.GetString("AWS_REGION"),
 		AWS_S3_BUCKET:         viper.GetString("AWS_S3_BUCKET"),
 		ALLOWED_ORIGIN:        viper.GetString("ALLOWED_ORIGIN"),
+		SENDGRID_API_KEY:      viper.GetString("SENDGRID_API_KEY"),
 	}
 
 	// validate config
@@ -85,6 +87,9 @@ func LoadConfig() {
 	}
 	if AppConfig.ALLOWED_ORIGIN == "" {
 		log.Fatal("ALLOWED_ORIGIN is required")
+	}
+	if AppConfig.SENDGRID_API_KEY == "" {
+		log.Fatal("SENDGRID_API_KEY is required")
 	}
 
 }

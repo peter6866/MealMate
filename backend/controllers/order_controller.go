@@ -45,3 +45,16 @@ func (c *OrderController) GetAllOrders(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, orders)
 }
+
+func (c *OrderController) CompleteOrder(ctx *gin.Context) {
+	userID, _ := ctx.Get("userID")
+	orderID := ctx.Param("id")
+
+	err := c.orderService.CompleteOrder(ctx.Request.Context(), userID.(string), orderID)
+	if err != nil {
+		ctx.Error(err)
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"message": "Mark order as completed"})
+}
