@@ -36,6 +36,8 @@ export default async function ProfilePage() {
     dishesEaten: 56,
   };
 
+  const isChef = cookieStore.get('isChef')?.value === 'true';
+
   return (
     <div className="flex flex-col min-h-[93vh] bg-mainLight dark:bg-mainDark">
       <div className="text-white dark:text-default-700 p-6 mt-4">
@@ -46,7 +48,7 @@ export default async function ProfilePage() {
           />
           <div className="ml-4">
             <h2 className="text-xl font-semibold">{user.name}</h2>
-            <p className="text-sm opacity-85">{user.email}</p>
+            {isChef && <p className="text-sm opacity-85">Chef</p>}
           </div>
         </div>
       </div>
