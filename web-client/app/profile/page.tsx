@@ -33,7 +33,7 @@ export default async function ProfilePage() {
   const stats = {
     mealsLogged: 42,
     totalOrders: 78,
-    dishesEaten: 56,
+    dishesEaten: 0,
   };
 
   const isChef = cookieStore.get('isChef')?.value === 'true';
