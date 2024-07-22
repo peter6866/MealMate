@@ -32,7 +32,7 @@ export default async function ProfilePage() {
   // Placeholder data (replace with actual data from your API)
   const stats = {
     mealsLogged: 42,
-    totalOrders: 78,
+    totalOrders: 0,
     dishesEaten: 0,
   };
 
