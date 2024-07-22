@@ -10,8 +10,8 @@ function AddToCartButton() {
     <Button
       type="submit"
       color="primary"
-      size="lg"
-      className="w-full bg-mainLight dark:bg-mainDark text-white text-lg py-3"
+      size="md"
+      className="w-full bg-mainLight dark:bg-mainDark text-white text-lg"
       isLoading={pending}
     >
       Add to Cart

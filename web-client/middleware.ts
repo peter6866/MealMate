@@ -71,5 +71,6 @@ export const config = {
     '/',
     '/cart/:path*',
     '/login/setChefAndPartner',
+    '/orders/:path*',
   ],
 };

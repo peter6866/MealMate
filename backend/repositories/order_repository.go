@@ -7,6 +7,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 type OrderRepository struct {
@@ -40,7 +41,8 @@ func (r *OrderRepository) FindByID(ctx context.Context, id primitive.ObjectID) (
 
 // get all orders with createdBy for non-chef user
 func (r *OrderRepository) GetAllForUser(ctx context.Context, createdBy primitive.ObjectID) ([]*models.Order, error) {
-	cursor, err := r.collection.Find(ctx, bson.M{"createdBy": createdBy})
+	opts := options.Find().SetSort(bson.D{{Key: "orderDate", Value: -1}})
+	cursor, err := r.collection.Find(ctx, bson.M{"createdBy": createdBy}, opts)
 	if err != nil {
 		return nil, err
 	}
@@ -55,7 +57,8 @@ func (r *OrderRepository) GetAllForUser(ctx context.Context, createdBy primitive
 
 // get all orders with sendTo for chef user
 func (r *OrderRepository) GetAllForChef(ctx context.Context, sendTo primitive.ObjectID) ([]*models.Order, error) {
-	cursor, err := r.collection.Find(ctx, bson.M{"sendTo": sendTo})
+	opts := options.Find().SetSort(bson.D{{Key: "orderDate", Value: -1}})
+	cursor, err := r.collection.Find(ctx, bson.M{"sendTo": sendTo}, opts)
 	if err != nil {
 		return nil, err
 	}

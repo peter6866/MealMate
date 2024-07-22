@@ -20,9 +20,16 @@ export async function GET(request: NextRequest) {
       }
     );
 
-    const { token } = response.data;
+    const { token, isChef } = response.data;
 
     cookies().set('token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 60 * 60 * 24 * 14,
+    });
+
+    cookies().set('isChef', isChef, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',

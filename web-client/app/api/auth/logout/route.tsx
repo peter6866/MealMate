@@ -7,11 +7,9 @@ import axios from 'axios';
 // clears the token cookie
 export async function GET(request: NextRequest) {
   const cookieStore = cookies();
-  cookieStore.set('token', '', {
-    httpOnly: true,
-    secure: false,
-    sameSite: 'lax',
-  });
+
+  cookieStore.delete('token');
+  cookieStore.delete('isChef');
 
   return NextResponse.json({ message: 'Logged out' });
 }

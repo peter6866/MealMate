@@ -152,9 +152,9 @@ export default async function MenuItem({ params }: { params: any }) {
             {isInCart ? (
               <Button
                 color="primary"
-                size="lg"
+                size="md"
                 fullWidth
-                className="text-lg py-3 bg-mainLight dark:bg-mainDark"
+                className="text-lg bg-mainLight dark:bg-mainDark"
                 isDisabled
               >
                 Added to Cart

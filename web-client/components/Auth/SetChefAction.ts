@@ -25,7 +25,7 @@ export async function setChef(prevState: any, formData: any) {
   const token = cookieStore.get('token')?.value;
 
   try {
-    await axios.post(
+    const response = await axios.post(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth/setChefAndPartner`,
       setData,
       {
@@ -35,7 +35,13 @@ export async function setChef(prevState: any, formData: any) {
       }
     );
 
-    revalidatePath('/menuItems');
+    cookies().set('isChef', response.data.isChef, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 60 * 60 * 24 * 14,
+    });
+    revalidatePath('/');
   } catch (error) {
     if (axios.isAxiosError(error)) {
       return {

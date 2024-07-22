@@ -86,7 +86,14 @@ func (c *AuthController) LoginOrRegister(context *gin.Context) {
 		return
 	}
 
-	context.JSON(http.StatusOK, gin.H{"token": jwtToken})
+	var isChef string
+	if user.IsChef {
+		isChef = "true"
+	} else {
+		isChef = "false"
+	}
+
+	context.JSON(http.StatusOK, gin.H{"token": jwtToken, "isChef": isChef})
 }
 
 func (c *AuthController) GetUser(context *gin.Context) {
