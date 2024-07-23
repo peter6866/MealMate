@@ -79,6 +79,11 @@ func (s *OrderService) CreateOrder(ctx context.Context, userID string, order *mo
 		}
 	}
 
+	err = s.userRepo.ClearCart(ctx, userObjectId)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 

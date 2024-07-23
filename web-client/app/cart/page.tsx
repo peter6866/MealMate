@@ -5,6 +5,7 @@ import { cookies } from 'next/headers';
 import CartList from '@/components/Cart/CartList';
 import cartLogo from '@/public/empty-cart.png';
 import { Button } from '@nextui-org/button';
+import CreateOrderButton from '@/components/Orders/CreateOrderButton';
 
 export default async function Cart() {
   const cookieStore = cookies();
@@ -50,15 +51,7 @@ export default async function Cart() {
         )}
       </div>
       {cartItems && cartItems.length > 0 && (
-        <div className="fixed bottom-16 left-0 right-0 p-4 bg-content1 dark:bg-content1">
-          <Button
-            color="primary"
-            fullWidth
-            className="bg-mainLight dark:bg-mainDark text-lg"
-          >
-            Create Order
-          </Button>
-        </div>
+        <CreateOrderButton cartItems={cartItems} />
       )}
     </div>
   );

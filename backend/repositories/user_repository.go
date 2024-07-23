@@ -105,6 +105,16 @@ func (r *UserRepository) RemoveFromCart(ctx context.Context, userID, menuItemID 
 	return err
 }
 
+// clear the user's cart
+func (r *UserRepository) ClearCart(ctx context.Context, userID primitive.ObjectID) error {
+	_, err := r.collection.UpdateOne(
+		ctx,
+		bson.M{"_id": userID},
+		bson.M{"$set": bson.M{"cart": []primitive.ObjectID{}}},
+	)
+	return err
+}
+
 // Add an order to a user's history
 func (r *UserRepository) AddOrder(userID, orderID primitive.ObjectID) error {
 	_, err := r.collection.UpdateOne(
