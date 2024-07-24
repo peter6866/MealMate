@@ -29,6 +29,12 @@ func ErrorHandler() gin.HandlerFunc {
 			case custom_errors.ErrInvalidObjectID:
 				status = http.StatusBadRequest
 				message = "Invalid Object ID"
+			case custom_errors.ErrMissingFields:
+				status = http.StatusBadRequest
+				message = "All fields are required"
+			case custom_errors.ErrMealNotFound:
+				status = http.StatusNotFound
+				message = "Meal not found"
 			default:
 				status = http.StatusInternalServerError
 				message = "Internal server error"

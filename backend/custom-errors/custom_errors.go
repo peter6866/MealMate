@@ -7,4 +7,6 @@ var (
 	ErrOrderNotFound   = errors.New("order not found")
 	ErrOrderCompleted  = errors.New("order already completed")
 	ErrInvalidObjectID = errors.New("invalid object ID")
+	ErrMissingFields   = errors.New("missing fields")
+	ErrMealNotFound    = errors.New("meal not found")
 )

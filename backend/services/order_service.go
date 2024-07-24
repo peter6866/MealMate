@@ -14,12 +14,14 @@ import (
 type OrderService struct {
 	userRepo  *repositories.UserRepository
 	orderRepo *repositories.OrderRepository
+	mealRepo  *repositories.MealRepository
 }
 
-func NewOrderService(userRepo *repositories.UserRepository, orderRepo *repositories.OrderRepository) *OrderService {
+func NewOrderService(userRepo *repositories.UserRepository, orderRepo *repositories.OrderRepository, mealRepo *repositories.MealRepository) *OrderService {
 	return &OrderService{
 		userRepo:  userRepo,
 		orderRepo: orderRepo,
+		mealRepo:  mealRepo,
 	}
 }
 
@@ -80,6 +82,17 @@ func (s *OrderService) CreateOrder(ctx context.Context, userID string, order *mo
 	}
 
 	err = s.userRepo.ClearCart(ctx, userObjectId)
+	if err != nil {
+		return err
+	}
+
+	// create a meal for the order
+	var meal models.Meal
+	meal.Items = order.Items
+	meal.MealDate = primitive.NewDateTimeFromTime(order.OrderDate)
+	meal.CreatedBy = userObjectId
+
+	err = s.mealRepo.Create(ctx, &meal)
 	if err != nil {
 		return err
 	}

@@ -6,6 +6,7 @@ import (
 	"mime/multipart"
 	"time"
 
+	custom_errors "github.com/peter6866/foodie/custom-errors"
 	"github.com/peter6866/foodie/models"
 	"github.com/peter6866/foodie/repositories"
 	"github.com/peter6866/foodie/utils"
@@ -33,7 +34,7 @@ func NewMenuItemService(menuItemRepo *repositories.MenuItemRepository,
 func (s *MenuItemService) CreateMenuItem(ctx context.Context, userID string, item *models.MenuItem, file multipart.FileHeader) error {
 	userObjectId, err := primitive.ObjectIDFromHex(userID)
 	if err != nil {
-		return errors.New("invalid user ID")
+		return custom_errors.ErrInvalidObjectID
 	}
 
 	item.CreatedBy = userObjectId
@@ -83,12 +84,12 @@ type MenuItemWithCategory struct {
 func (s *MenuItemService) GetMenuItem(ctx context.Context, id string, userID string) (*MenuItemWithCategory, error) {
 	objectID, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
-		return nil, errors.New("invalid ID")
+		return nil, custom_errors.ErrInvalidObjectID
 	}
 
 	userObjectId, err := primitive.ObjectIDFromHex(userID)
 	if err != nil {
-		return nil, errors.New("invalid user ID")
+		return nil, custom_errors.ErrInvalidObjectID
 	}
 
 	user, err := s.userRepo.FindByID(ctx, userObjectId)
