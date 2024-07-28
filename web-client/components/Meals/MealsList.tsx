@@ -35,7 +35,7 @@ export default function MealsList({ meals }: { meals: any }) {
               />
             </div>
             <h3 className="text-md font-semibold mb-2 text-default-700">
-              What's on the plate:
+              What&apos;s on the plate:
             </h3>
             <ul className="space-y-1">
               {meal.items.map((item: any) => (
