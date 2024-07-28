@@ -8,6 +8,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 type MealRepository struct {
@@ -35,6 +36,12 @@ func (r *MealRepository) Update(ctx context.Context, meal *models.Meal) error {
 	return err
 }
 
+// delete a meal
+func (r *MealRepository) Delete(ctx context.Context, id primitive.ObjectID) error {
+	_, err := r.collection.DeleteOne(ctx, bson.M{"_id": id})
+	return err
+}
+
 // find a meal by ID
 func (r *MealRepository) FindByID(ctx context.Context, id primitive.ObjectID) (*models.Meal, error) {
 	var meal models.Meal
@@ -44,17 +51,6 @@ func (r *MealRepository) FindByID(ctx context.Context, id primitive.ObjectID) (*
 		if err == mongo.ErrNoDocuments {
 			return nil, custom_errors.ErrMealNotFound
 		}
-		return nil, err
-	}
-
-	return &meal, nil
-}
-
-// find a meal by date
-func (r *MealRepository) FindByDate(ctx context.Context, date primitive.DateTime, userID primitive.ObjectID) (*models.Meal, error) {
-	var meal models.Meal
-	err := r.collection.FindOne(ctx, bson.M{"mealDate": date, "createdBy": userID}).Decode(&meal)
-	if err != nil {
 		return nil, err
 	}
 
@@ -78,9 +74,9 @@ func (r *MealRepository) FindByDateRange(ctx context.Context, startDate primitiv
 	return meals, nil
 }
 
-// get all meals with createdBy userID
+// get all meals with createdBy userID order by mealDate desc
 func (r *MealRepository) GetAllForUser(ctx context.Context, createdBy primitive.ObjectID) ([]*models.Meal, error) {
-	cursor, err := r.collection.Find(ctx, bson.M{"createdBy": createdBy})
+	cursor, err := r.collection.Find(ctx, bson.M{"createdBy": createdBy}, options.Find().SetSort(bson.M{"mealDate": -1}))
 	if err != nil {
 		return nil, err
 	}

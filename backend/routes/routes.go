@@ -89,6 +89,10 @@ func SetupRouter(client *mongo.Client) *gin.Engine {
 		mealRoutes := authenticatedRoutes.Group("/meals")
 		{
 			mealRoutes.POST("", mealController.CreateMeal)
+			mealRoutes.PUT("/:mealID", mealController.UpdateMealFromOrder)
+			mealRoutes.GET("", mealController.GetAllMeals)
+			mealRoutes.POST("/date", mealController.GetMealsByDateRange)
+			mealRoutes.DELETE("/:mealID", mealController.DeleteMeal)
 		}
 	}
 
