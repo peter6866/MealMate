@@ -7,6 +7,8 @@ import { Providers } from './providers';
 import { Suspense } from 'react';
 import CartItemsCount from '@/components/Cart/CartItemsCount';
 import { Open_Sans } from 'next/font/google';
+import LargeScreenMessage from '@/components/LargeScreenMessage';
+import ToastProvider from '@/components/ToastProvider';
 
 const openSans = Open_Sans({
   subsets: ['latin'],
@@ -42,10 +44,18 @@ export default function RootLayout({
       <head />
       <body className="font-sans">
         <Providers>
-          <main className="container mx-auto max-w-7xl pb-16">{children}</main>
-          <Suspense fallback={<Navbar cartItemsCount={0} />}>
-            <CartItemsCountWrapper />
-          </Suspense>
+          <div className="hidden md:block">
+            <LargeScreenMessage />
+          </div>
+          <div className="md:hidden">
+            <main className="container mx-auto max-w-7xl pb-16">
+              {children}
+              <ToastProvider />
+            </main>
+            <Suspense fallback={<Navbar cartItemsCount={0} />}>
+              <CartItemsCountWrapper />
+            </Suspense>
+          </div>
         </Providers>
       </body>
     </html>

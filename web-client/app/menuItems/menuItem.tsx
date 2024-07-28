@@ -1,3 +1,4 @@
+import AddToCartIconForm from '@/components/Cart/AddToCartIcon';
 import { PlusCircleIcon } from '@heroicons/react/24/outline';
 import { Card, CardFooter } from '@nextui-org/card';
 import NextImage from 'next/image';
@@ -24,7 +25,7 @@ export default function MenuItem({ dish }: { dish: Dish }) {
       </Link>
       <CardFooter className="justify-between">
         <p className="font-medium text-default-800">{dish.name}</p>
-        <PlusCircleIcon className="w-6 h-6 text-mainLight" />
+        <AddToCartIconForm menuItemId={dish.id} itemName={dish.name} />
       </CardFooter>
     </Card>
   );
