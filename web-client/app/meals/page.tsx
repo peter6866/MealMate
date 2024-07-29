@@ -7,6 +7,8 @@ import MealsFilter from '@/components/Meals/MealsFilter';
 import axios from 'axios';
 import { cookies } from 'next/headers';
 
+import { Meal } from '@/types/meals';
+
 export default async function MealsPage() {
   const cookieStore = cookies();
   const token = cookieStore.get('token')?.value;
@@ -31,11 +33,11 @@ export default async function MealsPage() {
     }
   );
 
-  const { meals } = response.data;
+  const { meals }: { meals: Meal[] } = response.data;
 
   return (
-    <div className="bg-content2 dark:bg-content1 min-h-[95vh] p-4 relative">
-      <header className="mb-6">
+    <div className="flex flex-col bg-content1 dark:bg-content1 min-h-[95vh] pt-4 relative">
+      <header className="mb-4">
         <h1 className="text-2xl font-bold text-center text-default-800 mb-4">
           Your Meals
         </h1>
@@ -43,15 +45,17 @@ export default async function MealsPage() {
         <MealsFilter />
       </header>
 
-      <MealsList meals={meals} />
+      <div className="bg-content2 flex flex-col flex-1 p-4 rounded-t-2xl">
+        <MealsList meals={meals} />
 
-      <Link href="#" passHref className="mt-3 flex">
-        <Button color="primary" variant="light" size="md">
-          View All Meals
-        </Button>
-      </Link>
+        <Link href="#" passHref className="mt-3 flex">
+          <Button color="primary" variant="light" size="md">
+            View All Meals
+          </Button>
+        </Link>
+      </div>
 
-      <Link href="#" passHref>
+      <Link href="/meals/create" passHref>
         <Button
           color="primary"
           aria-label="Create"

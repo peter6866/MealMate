@@ -11,16 +11,20 @@ export default async function CartItemsCount() {
     return 0;
   }
 
-  const response = await axios.get(
-    `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/cart`,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
+  try {
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/cart`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
 
-  const cartItems = response.data;
+    const cartItems = response.data;
 
-  return cartItems ? cartItems.length : 0;
+    return cartItems ? cartItems.length : 0;
+  } catch (e) {
+    return 0;
+  }
 }

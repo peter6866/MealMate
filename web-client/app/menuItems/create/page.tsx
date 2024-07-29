@@ -9,8 +9,8 @@ export default async function CreateMenuItemPage() {
   const categories = response.data;
 
   return (
-    <div className="fixed inset-0 bg-content2 p-4 flex items-center justify-center">
-      <div className="w-full max-w-md">
+    <div className="fixed inset-0 bg-content2 p-4 flex justify-center">
+      <div className="w-full mt-8">
         <CreateMenuItemForm categories={categories} />
       </div>
     </div>

@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import { Card } from '@nextui-org/card';
-import moment from 'moment';
 import OrderCompleteButton from './OrderCompleteButton';
+import OrderDate from './OrderDate';
 
 interface Item {
   id: string;
@@ -28,8 +28,6 @@ export default function Order({
   const orderFrom = order.createdBy === order.sendTo ? 'You' : 'Your Partner';
   const header =
     isChef === 'true' ? `Order from ${orderFrom}` : 'Order to the Chef';
-
-  const formattedDate = moment(order.orderDate).format('MMMM D, YYYY HH:mm');
 
   return (
     <Card shadow="none" className="px-4 py-3 dark:bg-content2">
@@ -64,7 +62,7 @@ export default function Order({
       </div>
       <p className="text-sm text-default-500 mt-3 flex justify-between items-center">
         <span>Order Date:</span>
-        <span>{formattedDate}</span>
+        <OrderDate orderDate={order.orderDate} />
       </p>
       {isChef === 'true' && order.status === 'Started' && (
         <OrderCompleteButton orderID={order.id} />
