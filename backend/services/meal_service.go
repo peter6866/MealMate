@@ -37,7 +37,7 @@ func (s *MealService) CreateMeal(ctx context.Context, userID string, meal *model
 
 	meal.CreatedBy = userObjectId
 
-	imageUrl, err := utils.UploadFileToS3(&file)
+	imageUrl, err := utils.UploadFileToS3(&file, false)
 	if err != nil {
 		return err
 	}
@@ -70,7 +70,7 @@ func (s *MealService) UpdateMealFromOrder(ctx context.Context, userID string, me
 		return custom_errors.ErrUnauthorized
 	}
 
-	imageUrl, err := utils.UploadFileToS3(&file)
+	imageUrl, err := utils.UploadFileToS3(&file, false)
 	if err != nil {
 		return err
 	}

@@ -9,16 +9,31 @@ import { cookies } from 'next/headers';
 
 import { Meal } from '@/types/meals';
 
-export default async function MealsPage() {
+export const revalidate = 0;
+
+interface MealsParams {
+  startDate: string;
+  endDate: string;
+}
+
+export default async function MealsPage({
+  searchParams,
+}: {
+  searchParams: MealsParams;
+}) {
   const cookieStore = cookies();
   const token = cookieStore.get('token')?.value;
+
+  let { startDate, endDate } = searchParams;
 
   const today = new Date();
   const tmr = new Date(today);
   tmr.setDate(tmr.getDate() + 1);
 
-  const startDate = today.toISOString().split('T')[0];
-  const endDate = tmr.toISOString().split('T')[0];
+  if (!startDate || !endDate) {
+    startDate = today.toISOString().split('T')[0];
+    endDate = tmr.toISOString().split('T')[0];
+  }
 
   const response = await axios.post(
     `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/meals/date`,
@@ -62,7 +77,7 @@ export default async function MealsPage() {
           className="fixed bottom-20 right-4 z-50 shadow-lg rounded-full bg-mainLight dark:bg-mainDark"
           startContent={<PlusIcon className="h-6 w-6" />}
         >
-          Log your meal
+          Log a meal
         </Button>
       </Link>
     </div>

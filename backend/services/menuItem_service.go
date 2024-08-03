@@ -60,7 +60,7 @@ func (s *MenuItemService) CreateMenuItem(ctx context.Context, userID string, ite
 		return errors.New("invalid alcohol content")
 	}
 
-	imageUrl, err := utils.UploadFileToS3(&file)
+	imageUrl, err := utils.UploadFileToS3(&file, true)
 	if err != nil {
 		return err
 	}

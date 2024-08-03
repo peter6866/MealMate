@@ -3,6 +3,7 @@ package utils
 import (
 	"bytes"
 	"fmt"
+	"image"
 	"mime/multipart"
 	"net/url"
 	"strings"
@@ -23,7 +24,7 @@ func minInt(a, b int) int {
 	return b
 }
 
-func UploadFileToS3(file *multipart.FileHeader) (string, error) {
+func UploadFileToS3(file *multipart.FileHeader, crop bool) (string, error) {
 	// Open the uploaded file
 	src, err := file.Open()
 	if err != nil {
@@ -37,10 +38,16 @@ func UploadFileToS3(file *multipart.FileHeader) (string, error) {
 		return "", err
 	}
 
-	size := minInt(img.Bounds().Dx(), img.Bounds().Dy())
+	var resizedImg *image.NRGBA
 
-	// resize and crop to a square
-	resizedImg := imaging.Fill(img, size, size, imaging.Center, imaging.Lanczos)
+	if crop {
+		size := minInt(img.Bounds().Dx(), img.Bounds().Dy())
+
+		// resize and crop to a square
+		resizedImg = imaging.Fill(img, size, size, imaging.Center, imaging.Lanczos)
+	} else {
+		resizedImg = imaging.Clone(img)
+	}
 
 	// create a buffer to store the resized image
 	buf := new(bytes.Buffer)

@@ -59,7 +59,7 @@ func (r *MealRepository) FindByID(ctx context.Context, id primitive.ObjectID) (*
 
 // find meals by date range and createdBy userID (e.g. 7/23 - 7/30)
 func (r *MealRepository) FindByDateRange(ctx context.Context, startDate primitive.DateTime, endDate primitive.DateTime, createdBy primitive.ObjectID) ([]*models.Meal, error) {
-	cursor, err := r.collection.Find(ctx, bson.M{"mealDate": bson.M{"$gte": startDate, "$lte": endDate}, "createdBy": createdBy})
+	cursor, err := r.collection.Find(ctx, bson.M{"mealDate": bson.M{"$gte": startDate, "$lte": endDate}, "createdBy": createdBy}, options.Find().SetSort(bson.M{"mealDate": 1}))
 	if err != nil {
 		return nil, err
 	}
