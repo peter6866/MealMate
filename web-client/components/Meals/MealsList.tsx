@@ -29,8 +29,8 @@ export default function MealsList({ meals }: { meals: Meal[] }) {
           No Meals Logged
         </h2>
         <p className="text-default-500">
-          You haven't logged any meals for the selected date. Start logging your
-          meals now!
+          You haven&apos;t logged any meals for the selected date. Start logging
+          your meals now!
         </p>
       </Card>
     );
