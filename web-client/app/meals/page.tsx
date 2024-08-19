@@ -51,7 +51,7 @@ export default async function MealsPage({
   const { meals }: { meals: Meal[] } = response.data;
 
   return (
-    <div className="flex flex-col bg-content1 dark:bg-content1 min-h-[95vh] pt-4 relative">
+    <div className="flex flex-col bg-content1 dark:bg-content2 min-h-[95vh] pt-4 relative">
       <header className="mb-4">
         <h1 className="text-2xl font-bold text-center text-default-800 mb-4">
           Your Meals
@@ -60,7 +60,7 @@ export default async function MealsPage({
         <MealsFilter />
       </header>
 
-      <div className="bg-content2 flex flex-col flex-1 p-4 rounded-t-2xl">
+      <div className="bg-content2 dark:bg-content1 flex flex-col flex-1 p-4 rounded-t-2xl">
         <MealsList meals={meals} />
 
         <Link href="#" passHref className="mt-3 flex">

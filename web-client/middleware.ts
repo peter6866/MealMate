@@ -61,6 +61,10 @@ export async function middleware(req: NextRequest) {
     return NextResponse.redirect(new URL('/menuItems', req.nextUrl));
   }
 
+  if (req.nextUrl.pathname === '/login' && isLoggedIn) {
+    return NextResponse.redirect(new URL('/menuItems', req.nextUrl));
+  }
+
   return NextResponse.next();
 }
 
@@ -70,6 +74,7 @@ export const config = {
     '/menuItems/:path*',
     '/',
     '/cart/:path*',
+    '/login',
     '/login/setChefAndPartner',
     '/orders/:path*',
     '/meals/:path*',

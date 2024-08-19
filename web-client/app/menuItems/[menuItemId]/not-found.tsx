@@ -26,7 +26,7 @@ export default function NotFound() {
           We couldn&apos;t find the menu item you&apos;re looking for. It might
           have been removed or doesn&apos;t exist.
         </p>
-        <Link href="/" passHref>
+        <Link href="/menuItems" passHref>
           <Button as="a" color="primary" className="w-full bg-mainLight mt-6">
             Back to All Items
           </Button>
