@@ -80,11 +80,6 @@ Thumbs.db
 # AWS SAM CLI
 .aws-sam/
 
-# Docker
-.dockerignore
-Dockerfile
-docker-compose.yml
-
 # GitHub workflow files
 .github/
 

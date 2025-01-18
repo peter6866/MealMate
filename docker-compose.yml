@@ -1,0 +1,14 @@
+services:
+  main-service:
+    build:
+      context: ./backend
+    ports:
+      - '8080:8080'
+    volumes:
+      - ./backend:/app
+      - go-modules:/go/pkg/mod
+    env_file:
+      - ./backend/.env
+
+volumes:
+  go-modules:
