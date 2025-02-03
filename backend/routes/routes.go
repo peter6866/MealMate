@@ -29,6 +29,7 @@ func SetupRouter(client *mongo.Client) *gin.Engine {
 
 	// All Repositories
 	userRepo := repositories.NewUserRepository(client)
+	simpUserRepo := repositories.NewSimpUserRepository(client)
 	categoryRepo := repositories.NewCategoryRepository(client)
 	menuItemRepo := repositories.NewMenuItemRepository(client)
 	orderRepo := repositories.NewOrderRepository(client)
@@ -37,14 +38,11 @@ func SetupRouter(client *mongo.Client) *gin.Engine {
 	// All Services
 	userService := services.NewUserService(userRepo, menuItemRepo)
 	categoryService := services.NewCategoryService(categoryRepo)
-	menuItemService := services.NewMenuItemService(menuItemRepo, categoryRepo, userRepo)
+	menuItemService := services.NewMenuItemService(menuItemRepo, categoryRepo, simpUserRepo)
 	orderService := services.NewOrderService(userRepo, orderRepo, mealRepo)
 	mealService := services.NewMealService(mealRepo)
 
 	authController := controllers.NewAuthController(userService)
-
-	router.GET("/google_login", controllers.GoogleLogin)
-	router.POST("/api/auth/loginOrRegister", authController.LoginOrRegister)
 
 	categoryController := controllers.NewCategoryController(categoryService)
 	menuItemController := controllers.NewMenuItemController(menuItemService)
@@ -57,10 +55,6 @@ func SetupRouter(client *mongo.Client) *gin.Engine {
 	authenticatedRoutes := router.Group("/api")
 	authenticatedRoutes.Use(middlewares.AuthMiddleware)
 	{
-		authenticatedRoutes.GET("/auth/getUser", authController.GetUser)
-		authenticatedRoutes.POST("/auth/setChefAndPartner", authController.SetChefAndPartner)
-
-		authenticatedRoutes.POST("/cart", authController.AddToCart)
 		authenticatedRoutes.GET("/cart", authController.GetCartItems)
 		authenticatedRoutes.DELETE("/cart/:id", authController.RemoveFromCart)
 

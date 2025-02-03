@@ -10,7 +10,10 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
-var MongoClient *mongo.Client
+var (
+	MongoClient *mongo.Client
+	MongoDB     *mongo.Database
+)
 
 func ConnectMongoDB() {
 	clientOptions := options.Client().ApplyURI(AppConfig.MONGO_URI)
@@ -26,10 +29,13 @@ func ConnectMongoDB() {
 	}
 
 	// Ping the db to check if the connection is successful
-	if err := client.Ping(context.Background(), readpref.Primary()); err != nil {
+	if err := client.Ping(ctx, readpref.Primary()); err != nil {
 		log.Fatalf("Error while pinging to MongoDB: %v", err)
 	}
 
 	log.Println("Connected to MongoDB!")
 	MongoClient = client
+
+	MongoDB = client.Database("auth_service")
+	log.Println("Using database: ", MongoDB.Name())
 }

@@ -16,12 +16,12 @@ import (
 type MenuItemService struct {
 	menuItemRepo *repositories.MenuItemRepository
 	categoryRepo *repositories.CategoryRepository
-	userRepo     *repositories.UserRepository
+	userRepo     *repositories.SimpUserRepository
 }
 
 func NewMenuItemService(menuItemRepo *repositories.MenuItemRepository,
 	categoryRepo *repositories.CategoryRepository,
-	userRepo *repositories.UserRepository,
+	userRepo *repositories.SimpUserRepository,
 ) *MenuItemService {
 	return &MenuItemService{
 		menuItemRepo: menuItemRepo,

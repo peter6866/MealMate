@@ -20,6 +20,7 @@ type Config struct {
 	AWS_S3_BUCKET         string
 	ALLOWED_ORIGIN        string
 	SENDGRID_API_KEY      string
+	RABBITMQ_URL          string
 }
 
 var AppConfig Config
@@ -52,6 +53,7 @@ func LoadConfig() {
 		AWS_S3_BUCKET:         viper.GetString("AWS_S3_BUCKET"),
 		ALLOWED_ORIGIN:        viper.GetString("ALLOWED_ORIGIN"),
 		SENDGRID_API_KEY:      viper.GetString("SENDGRID_API_KEY"),
+		RABBITMQ_URL:          viper.GetString("RABBITMQ_URL"),
 	}
 
 	// validate config
@@ -90,6 +92,9 @@ func LoadConfig() {
 	}
 	if AppConfig.SENDGRID_API_KEY == "" {
 		log.Fatal("SENDGRID_API_KEY is required")
+	}
+	if AppConfig.RABBITMQ_URL == "" {
+		log.Fatal("RABBITMQ_URL is required")
 	}
 
 }

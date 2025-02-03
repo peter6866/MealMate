@@ -15,6 +15,7 @@ type Config struct {
 	GOOGLE_RANDOM_STATE string
 	GoogleLoginConfig   oauth2.Config
 	ALLOWED_ORIGIN      string
+	RABBITMQ_URL        string
 }
 
 var AppConfig Config
@@ -42,6 +43,7 @@ func LoadConfig() {
 			Endpoint:     google.Endpoint,
 		},
 		ALLOWED_ORIGIN: viper.GetString("ALLOWED_ORIGIN"),
+		RABBITMQ_URL:   viper.GetString("RABBITMQ_URL"),
 	}
 
 	// validate config
@@ -65,6 +67,9 @@ func LoadConfig() {
 	}
 	if AppConfig.ALLOWED_ORIGIN == "" {
 		log.Fatal("ALLOWED_ORIGIN is required")
+	}
+	if AppConfig.RABBITMQ_URL == "" {
+		log.Fatal("RABBITMQ_URL is required")
 	}
 
 }

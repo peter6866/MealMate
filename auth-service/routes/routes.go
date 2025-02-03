@@ -30,7 +30,7 @@ func SetupRouter(client *mongo.Client) *gin.Engine {
 	userService := services.NewUserService(userRepo)
 	authHandler := handlers.NewAuthHandler(userService)
 
-	router.GET("/google_login", handlers.GoogleLogin)
+	router.GET("/api/auth/google_login", handlers.GoogleLogin)
 	router.POST("/api/auth/loginOrRegister", authHandler.LoginOrRegister)
 
 	// Authenticated routes
@@ -40,9 +40,9 @@ func SetupRouter(client *mongo.Client) *gin.Engine {
 		authenticatedRoutes.GET("/auth/getUser", authHandler.GetUser)
 		authenticatedRoutes.POST("/auth/setChefAndPartner", authHandler.SetChefAndPartner)
 
-		authenticatedRoutes.POST("/cart", authHandler.AddToCart)
+		authenticatedRoutes.POST("/auth/cart", authHandler.AddToCart)
 		// authenticatedRoutes.GET("/cart", authHandler.GetCartItems)
-		authenticatedRoutes.DELETE("/cart/:id", authHandler.RemoveFromCart)
+		authenticatedRoutes.DELETE("/auth/cart/:id", authHandler.RemoveFromCart)
 	}
 
 	return router

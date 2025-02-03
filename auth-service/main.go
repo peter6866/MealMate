@@ -8,7 +8,7 @@ import (
 
 func main() {
 	config.LoadConfig()
-
+	config.ConnectRabbitMQ()
 	config.ConnectMongoDB()
 	client := config.MongoClient
 
@@ -16,7 +16,7 @@ func main() {
 	router := routes.SetupRouter(client)
 
 	// start server
-	port := "8081"
+	port := "8080"
 
 	if err := router.Run(":" + port); err != nil {
 		log.Fatalf("Failed to start server: %v", err)

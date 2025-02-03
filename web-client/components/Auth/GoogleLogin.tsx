@@ -13,7 +13,7 @@ export default function GoogleLogin() {
     setLoading(true);
     try {
       const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/google_login`
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth/google_login`
       );
       window.location.href = response.data.url;
     } catch (error) {

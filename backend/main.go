@@ -6,16 +6,18 @@ import (
 
 	"github.com/peter6866/foodie/config"
 	"github.com/peter6866/foodie/routes"
+	"github.com/peter6866/foodie/services"
 )
 
 func main() {
 	config.LoadConfig()
 
 	config.ConnectMongoDB()
-	client := config.MongoClient
+
+	services.StartConsumer()
 
 	// Initialize Gin Router
-	router := routes.SetupRouter(client)
+	router := routes.SetupRouter(config.MongoClient)
 
 	// start server
 	port := os.Getenv("PORT")

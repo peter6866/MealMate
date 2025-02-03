@@ -5,6 +5,7 @@ import (
 	"auth-service/repositories"
 	"context"
 	"errors"
+	"log"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -38,6 +39,12 @@ func (s *UserService) CreateUser(ctx context.Context, name, email, googleID, rol
 		return nil, err
 	}
 	user.ID = userId
+
+	// Publish user created event
+	if err := PublishUserEvent(ctx, "user.created", user); err != nil {
+		log.Printf("Failed to publish user created event: %v", err)
+	}
+
 	return user, nil
 }
 
@@ -91,6 +98,11 @@ func (s *UserService) SetChefAndPartner(ctx context.Context, userID string, isCh
 	err = s.UpdateUser(ctx, user)
 	if err != nil {
 		return nil, err
+	}
+
+	// Publish user updated event
+	if err := PublishUserEvent(ctx, "user.updated", user); err != nil {
+		log.Printf("Failed to publish user updated event: %v", err)
 	}
 
 	return user, nil

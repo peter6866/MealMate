@@ -1,6 +1,7 @@
 package repositories
 
 import (
+	"auth-service/config"
 	"auth-service/models"
 	"context"
 
@@ -14,7 +15,7 @@ type UserRepository struct {
 }
 
 func NewUserRepository(client *mongo.Client) *UserRepository {
-	collection := client.Database("foodie").Collection("users")
+	collection := config.MongoDB.Collection("users")
 	return &UserRepository{collection: collection}
 }
 
