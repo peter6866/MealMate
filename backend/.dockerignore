@@ -1,0 +1,28 @@
+# Binaries and object files
+*.exe
+*.out
+*.o
+*.a
+*.so
+bin/
+tmp/
+
+# Go dependencies
+vendor/
+pkg/
+coverage.out
+
+# Logs and cache
+*.log
+*.cache
+
+# Editor and OS-specific files
+.DS_Store
+*.swp
+*.swo
+.idea/
+.vscode/
+
+# Version control
+.git/
+.gitignore

@@ -13,13 +13,11 @@ import (
 )
 
 type MealService struct {
-	userRepo *repositories.UserRepository
 	mealRepo *repositories.MealRepository
 }
 
-func NewMealService(userRepo *repositories.UserRepository, mealRepo *repositories.MealRepository) *MealService {
+func NewMealService(mealRepo *repositories.MealRepository) *MealService {
 	return &MealService{
-		userRepo: userRepo,
 		mealRepo: mealRepo,
 	}
 }

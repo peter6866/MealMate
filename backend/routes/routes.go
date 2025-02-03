@@ -39,7 +39,7 @@ func SetupRouter(client *mongo.Client) *gin.Engine {
 	categoryService := services.NewCategoryService(categoryRepo)
 	menuItemService := services.NewMenuItemService(menuItemRepo, categoryRepo, userRepo)
 	orderService := services.NewOrderService(userRepo, orderRepo, mealRepo)
-	mealService := services.NewMealService(userRepo, mealRepo)
+	mealService := services.NewMealService(mealRepo)
 
 	authController := controllers.NewAuthController(userService)
 
