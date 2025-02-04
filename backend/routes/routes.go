@@ -1,6 +1,8 @@
 package routes
 
 import (
+	"log"
+
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/peter6866/foodie/config"
@@ -15,7 +17,7 @@ func SetupRouter(client *mongo.Client) *gin.Engine {
 	router := gin.Default()
 
 	// config cors
-	config := cors.Config{
+	corsConfig := cors.Config{
 		AllowOrigins:     []string{config.AppConfig.ALLOWED_ORIGIN},
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE"},
 		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
@@ -23,7 +25,7 @@ func SetupRouter(client *mongo.Client) *gin.Engine {
 		AllowCredentials: true,
 	}
 
-	router.Use(cors.New(config))
+	router.Use(cors.New(corsConfig))
 	// Register custom error handler middleware
 	router.Use(middlewares.ErrorHandler())
 
@@ -34,6 +36,11 @@ func SetupRouter(client *mongo.Client) *gin.Engine {
 	menuItemRepo := repositories.NewMenuItemRepository(client)
 	orderRepo := repositories.NewOrderRepository(client)
 	mealRepo := repositories.NewMealRepository(client)
+
+	consumer := services.NewUserEventConsumer(simpUserRepo, config.RabbitMQChannel)
+	if err := consumer.Start(); err != nil {
+		log.Printf("Warning: Failed to start consumer: %v", err)
+	}
 
 	// All Services
 	userService := services.NewUserService(userRepo, menuItemRepo)

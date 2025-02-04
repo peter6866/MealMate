@@ -3,6 +3,7 @@ package services
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"log"
 
 	"github.com/peter6866/foodie/models"
@@ -11,10 +12,9 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-type ConsumerService struct {
-	conn         *amqp.Connection
-	channel      *amqp.Channel
+type UserEventConsumer struct {
 	simpUserRepo *repositories.SimpUserRepository
+	channel      *amqp.Channel
 }
 
 type UserEvent struct {
@@ -27,114 +27,126 @@ type UserEvent struct {
 	} `json:"user"`
 }
 
-func NewConsumerService(amqpURL string, simpUserRepo *repositories.SimpUserRepository) (*ConsumerService, error) {
-	conn, err := amqp.Dial(amqpURL)
-	if err != nil {
-		return nil, err
-	}
-
-	channel, err := conn.Channel()
-	if err != nil {
-		return nil, err
-	}
-
-	return &ConsumerService{
-		conn:         conn,
+func NewUserEventConsumer(simpUserRepo *repositories.SimpUserRepository, channel *amqp.Channel) *UserEventConsumer {
+	return &UserEventConsumer{
 		channel:      channel,
 		simpUserRepo: simpUserRepo,
-	}, nil
+	}
 }
 
-func (s *ConsumerService) Start() error {
-	// Declare exchange
-	err := s.channel.ExchangeDeclare(
-		"user_events", // name
-		"fanout",      // type
+func (c *UserEventConsumer) Start() error {
+	if err := c.setupExchangeAndQueue(); err != nil {
+		return fmt.Errorf("failed to setup exchange and queue: %w", err)
+	}
+
+	return c.consume()
+}
+
+func (c *UserEventConsumer) setupExchangeAndQueue() error {
+	// Declare the exchange
+	if err := c.channel.ExchangeDeclare(
+		"user_events", // exchange name
+		"fanout",      // exchange type
 		true,          // durable
 		false,         // auto-deleted
 		false,         // internal
 		false,         // no-wait
 		nil,           // arguments
-	)
-	if err != nil {
-		return err
+	); err != nil {
+		return fmt.Errorf("failed to declare exchange: %w", err)
 	}
 
-	// Declare queue
-	queue, err := s.channel.QueueDeclare(
-		"backend_user_events", // name
-		true,                  // durable
-		false,                 // delete when unused
-		false,                 // exclusive
-		false,                 // no-wait
-		nil,                   // arguments
+	// Declare a queue
+	q, err := c.channel.QueueDeclare(
+		"main_user_events", // queue name
+		true,               // durable
+		false,              // delete when unused
+		false,              // exclusive
+		false,              // no-wait
+		nil,                // arguments
 	)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to declare queue: %w", err)
 	}
 
-	// Bind queue to exchange
-	err = s.channel.QueueBind(
-		queue.Name,    // queue name
+	// Bind the queue to the exchange
+	if err := c.channel.QueueBind(
+		q.Name,        // queue name
 		"",            // routing key
 		"user_events", // exchange
-		false,
-		nil,
-	)
-	if err != nil {
-		return err
+		false,         // no-wait
+		nil,           // arguments
+	); err != nil {
+		return fmt.Errorf("failed to bind queue: %w", err)
 	}
 
-	msgs, err := s.channel.Consume(
-		queue.Name, // queue
-		"",         // consumer
-		true,       // auto-ack
-		false,      // exclusive
-		false,      // no-local
-		false,      // no-wait
-		nil,        // args
-	)
-	if err != nil {
-		return err
-	}
-
-	go s.handleMessages(msgs)
 	return nil
 }
 
-func (s *ConsumerService) handleMessages(msgs <-chan amqp.Delivery) {
+func (c *UserEventConsumer) consume() error {
+	msgs, err := c.channel.Consume(
+		"main_user_events", // queue
+		"",                 // consumer
+		true,               // auto-ack
+		false,              // exclusive
+		false,              // no-local
+		false,              // no-wait
+		nil,                // args
+	)
+	if err != nil {
+		return fmt.Errorf("failed to register a consumer: %w", err)
+	}
+
+	go c.handleMessages(msgs)
+	log.Println("Started consuming user events")
+	return nil
+}
+
+func (c *UserEventConsumer) handleMessages(msgs <-chan amqp.Delivery) {
 	for msg := range msgs {
-		var event UserEvent
-		if err := json.Unmarshal(msg.Body, &event); err != nil {
-			log.Printf("Error unmarshaling message: %v", err)
-			continue
+		if err := c.processMessage(msg); err != nil {
+			log.Printf("Error processing message: %v", err)
 		}
+	}
+}
 
-		userID, _ := primitive.ObjectIDFromHex(event.SimpUser.ID)
+func (c *UserEventConsumer) processMessage(msg amqp.Delivery) error {
+	var userEvent UserEvent
+	if err := json.Unmarshal(msg.Body, &userEvent); err != nil {
+		return fmt.Errorf("failed to unmarshal user event: %w", err)
+	}
 
+	return c.handleUserEvent(context.Background(), &userEvent)
+}
+
+func (c *UserEventConsumer) handleUserEvent(ctx context.Context, event *UserEvent) error {
+	userID, err := primitive.ObjectIDFromHex(event.SimpUser.ID)
+	if err != nil {
+		return fmt.Errorf("invalid user ID: %w", err)
+	}
+
+	switch event.Type {
+	case "user.created", "user.updated":
 		simpUser := &models.SimpUser{
 			ID:           userID,
 			Email:        event.SimpUser.Email,
 			IsChef:       event.SimpUser.IsChef,
 			PartnerEmail: event.SimpUser.PartnerEmail,
 		}
-
-		switch event.Type {
-		case "user.created", "user.updated":
-			if err := s.simpUserRepo.Upsert(context.Background(), simpUser); err != nil {
-				log.Printf("Error upserting user: %v", err)
-			}
-		default:
-			log.Printf("Unknown event type: %s", event.Type)
+		if err := c.simpUserRepo.Upsert(ctx, simpUser); err != nil {
+			return fmt.Errorf("failed to upsert user: %w", err)
 		}
+
+	default:
+		return fmt.Errorf("unknown event type: %s", event.Type)
 	}
+
+	return nil
 }
 
-func (s *ConsumerService) Close() {
-	if s.channel != nil {
-		s.channel.Close()
+func (c *UserEventConsumer) Close() error {
+	if err := c.channel.Close(); err != nil {
+		return fmt.Errorf("error closing channel: %w", err)
 	}
-	if s.conn != nil {
-		s.conn.Close()
-	}
+	return nil
 }

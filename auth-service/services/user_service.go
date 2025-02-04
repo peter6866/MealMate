@@ -7,16 +7,21 @@ import (
 	"errors"
 	"log"
 
+	amqp "github.com/rabbitmq/amqp091-go"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
 type UserService struct {
-	repo *repositories.UserRepository
+	repo      *repositories.UserRepository
+	publisher *UserEventPublisher
 }
 
-func NewUserService(repo *repositories.UserRepository) *UserService {
-	return &UserService{repo: repo}
+func NewUserService(repo *repositories.UserRepository, channel *amqp.Channel) *UserService {
+	return &UserService{
+		repo:      repo,
+		publisher: NewUserEventPublisher(channel),
+	}
 }
 
 // Find or create user
@@ -41,7 +46,7 @@ func (s *UserService) CreateUser(ctx context.Context, name, email, googleID, rol
 	user.ID = userId
 
 	// Publish user created event
-	if err := PublishUserEvent(ctx, "user.created", user); err != nil {
+	if err := s.publisher.PublishUserEvent(ctx, "user.created", user); err != nil {
 		log.Printf("Failed to publish user created event: %v", err)
 	}
 
@@ -101,7 +106,7 @@ func (s *UserService) SetChefAndPartner(ctx context.Context, userID string, isCh
 	}
 
 	// Publish user updated event
-	if err := PublishUserEvent(ctx, "user.updated", user); err != nil {
+	if err := s.publisher.PublishUserEvent(ctx, "user.updated", user); err != nil {
 		log.Printf("Failed to publish user updated event: %v", err)
 	}
 

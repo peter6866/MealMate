@@ -6,17 +6,20 @@ import (
 	"auth-service/middlewares"
 	"auth-service/repositories"
 	"auth-service/services"
+	"log"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
+var userService *services.UserService
+
 func SetupRouter(client *mongo.Client) *gin.Engine {
 	router := gin.Default()
 
 	// config cors
-	config := cors.Config{
+	corsConfig := cors.Config{
 		AllowOrigins:     []string{config.AppConfig.ALLOWED_ORIGIN},
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE"},
 		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
@@ -24,12 +27,20 @@ func SetupRouter(client *mongo.Client) *gin.Engine {
 		AllowCredentials: true,
 	}
 
-	router.Use(cors.New(config))
+	router.Use(cors.New(corsConfig))
 
+	// Initialize services
 	userRepo := repositories.NewUserRepository(client)
-	userService := services.NewUserService(userRepo)
+	userService = services.NewUserService(userRepo, config.RabbitMQChannel)
 	authHandler := handlers.NewAuthHandler(userService)
 
+	// Initialize and start the order events consumer
+	consumer := services.NewOrderEventConsumer(userService, config.RabbitMQChannel)
+	if err := consumer.Start(); err != nil {
+		log.Printf("Warning: Failed to start order events consumer: %v", err)
+	}
+
+	// Routes setup
 	router.GET("/api/auth/google_login", handlers.GoogleLogin)
 	router.POST("/api/auth/loginOrRegister", authHandler.LoginOrRegister)
 
